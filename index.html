@@ -3,256 +3,131 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Thread Calculator — UNC/UNF · Metric · STI</title>
+<title>Thread Calculator — UNC/UNF · Metric · STI · AS5202</title>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --bg: #f5f4f0;
-    --surface: #ffffff;
-    --surface2: #f0efe9;
-    --border: rgba(0,0,0,0.12);
-    --border2: rgba(0,0,0,0.22);
-    --text: #1a1a18;
-    --text2: #5c5c58;
-    --text3: #8a8a84;
-    --blue: #185FA5;
-    --blue-light: #E6F1FB;
-    --blue-mid: #378ADD;
-    --teal: #0F6E56;
-    --teal-light: #E1F5EE;
-    --coral: #993C1D;
-    --amber: #854F0B;
-    --amber-light: #FAEEDA;
-    --red: #A32D2D;
-    --red-light: #FCEBEB;
-    --green: #3B6D11;
-    --gray: #888780;
-    --radius: 8px;
-    --radius-lg: 12px;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #1a1a18;
-      --surface: #232320;
-      --surface2: #2a2a27;
-      --border: rgba(255,255,255,0.10);
-      --border2: rgba(255,255,255,0.20);
-      --text: #e8e6df;
-      --text2: #a8a69e;
-      --text3: #6a6860;
-      --blue: #378ADD;
-      --blue-light: #0C447C;
-      --teal: #1D9E75;
-      --teal-light: #085041;
-      --amber: #EF9F27;
-      --amber-light: #412402;
-      --red-light: #501313;
-    }
-  }
-
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 1.5rem 1rem 3rem;
-  }
-
-  .page { max-width: 860px; margin: 0 auto; }
-
-  header { margin-bottom: 1.5rem; }
-  header h1 { font-size: 20px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
-  header p { font-size: 13px; color: var(--text2); }
-
-  .card {
-    background: var(--surface);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 1.25rem;
-    margin-bottom: 1rem;
-  }
-
-  .section-title {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: .06em;
-    text-transform: uppercase;
-    color: var(--text3);
-    margin-bottom: 10px;
-  }
-
-  .controls-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 12px;
-    margin-bottom: 1rem;
-  }
-
-  .field { display: flex; flex-direction: column; gap: 5px; }
-  .field label { font-size: 12px; color: var(--text2); font-weight: 500; }
-
-  select, input[type="text"] {
-    width: 100%;
-    padding: 8px 10px;
-    font-size: 13px;
-    border: 0.5px solid var(--border2);
-    border-radius: var(--radius);
-    background: var(--surface2);
-    color: var(--text);
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%23888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    padding-right: 28px;
-  }
-
-  select:focus { outline: 2px solid var(--blue); outline-offset: 1px; }
-
-  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; }
-
-  .tabs { display: flex; gap: 0; border: 0.5px solid var(--border2); border-radius: var(--radius); overflow: hidden; }
-  .tab {
-    padding: 7px 16px; font-size: 13px; border: none; cursor: pointer;
-    background: transparent; color: var(--text2); transition: background .15s, color .15s;
-  }
-  .tab + .tab { border-left: 0.5px solid var(--border2); }
-  .tab.active { background: var(--surface2); color: var(--text); font-weight: 500; }
-  .tab:hover:not(.active) { background: var(--surface2); }
-
-  .unit-toggle { display: flex; border: 0.5px solid var(--border2); border-radius: var(--radius); overflow: hidden; }
-  .ubtn {
-    padding: 7px 14px; font-size: 13px; border: none; cursor: pointer;
-    background: transparent; color: var(--text2); transition: background .15s;
-  }
-  .ubtn + .ubtn { border-left: 0.5px solid var(--border2); }
-  .ubtn.active { background: var(--surface2); color: var(--text); font-weight: 500; }
-
-  .main-grid {
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    gap: 16px;
-    align-items: start;
-  }
-
-  @media (max-width: 600px) {
-    .main-grid { grid-template-columns: 1fr; }
-  }
-
-  .diag-bg {
-    background: var(--surface2);
-    border-radius: var(--radius-lg);
-    border: 0.5px solid var(--border);
-    padding: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .metric-cards {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 1rem;
-  }
-
-  .metric-card {
-    background: var(--surface2);
-    border-radius: var(--radius);
-    padding: 10px 12px;
-  }
-  .metric-card .mc-label { font-size: 11px; color: var(--text2); margin-bottom: 3px; }
-  .metric-card .mc-val { font-size: 18px; font-weight: 600; color: var(--text); line-height: 1.2; }
-  .metric-card .mc-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
-
-  .sti-info {
-    background: var(--amber-light);
-    border-radius: var(--radius);
-    border-left: 3px solid var(--amber);
-    padding: 10px 12px;
-    margin-bottom: 1rem;
-    font-size: 12px;
-  }
-  .sti-info .sti-title { font-weight: 600; color: var(--amber); margin-bottom: 6px; font-size: 12px; }
-  .sti-info .sti-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; }
-  .sti-info .sti-row { color: var(--text2); }
-  .sti-info .sti-val { color: var(--text); font-weight: 500; }
-
-  .drill-table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th {
-    text-align: left; padding: 6px 10px; font-size: 11px; font-weight: 600;
-    color: var(--text3); border-bottom: 0.5px solid var(--border); white-space: nowrap;
-    text-transform: uppercase; letter-spacing: .04em;
-  }
-  td { padding: 7px 10px; border-bottom: 0.5px solid var(--border); color: var(--text); vertical-align: middle; }
-  tr:last-child td { border-bottom: none; }
-  tbody tr { cursor: pointer; transition: background .12s; }
-  tbody tr:hover td { background: var(--surface2); }
-  tbody tr.selected td { background: var(--blue-light); color: var(--blue); }
-
-  .badge {
-    font-size: 10px; padding: 2px 7px; border-radius: 10px;
-    display: inline-block; font-weight: 500; white-space: nowrap;
-  }
-  .badge-blue { background: var(--blue-light); color: var(--blue); }
-  .badge-amber { background: var(--amber-light); color: var(--amber); }
-
-  .eng-bar-wrap { height: 6px; background: var(--border); border-radius: 4px; overflow: hidden; min-width: 60px; }
-  .eng-bar { height: 100%; border-radius: 4px; transition: width .3s; }
-
-  .note-box {
-    background: var(--surface2);
-    border-radius: var(--radius);
-    padding: 10px 12px;
-    font-size: 12px;
-    color: var(--text2);
-    line-height: 1.6;
-    margin-top: .75rem;
-  }
-  .note-box strong { color: var(--text); }
-
-  footer {
-    text-align: center;
-    font-size: 11px;
-    color: var(--text3);
-    margin-top: 2rem;
-    padding-top: 1rem;
-    border-top: 0.5px solid var(--border);
-  }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f4f3ef;--surface:#fff;--surface2:#eeede8;
+  --border:rgba(0,0,0,0.11);--border2:rgba(0,0,0,0.20);
+  --text:#1c1b18;--text2:#5a5955;--text3:#929189;
+  --blue:#185FA5;--blue-lt:#E6F1FB;--blue-mid:#378ADD;
+  --teal:#0F6E56;--teal-lt:#E1F5EE;
+  --amber:#854F0B;--amber-lt:#FAEEDA;
+  --coral:#993C1D;--purple:#534AB7;--purple-lt:#EEEDFE;
+  --red:#A32D2D;--gray:#888780;
+  --r:8px;--rl:12px;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#1a1a18;--surface:#232320;--surface2:#2b2b28;
+  --border:rgba(255,255,255,0.09);--border2:rgba(255,255,255,0.18);
+  --text:#e6e4dd;--text2:#a4a29a;--text3:#686663;
+  --blue:#378ADD;--blue-lt:#0C447C;--blue-mid:#85B7EB;
+  --teal:#1D9E75;--teal-lt:#085041;
+  --amber:#EF9F27;--amber-lt:#412402;
+  --purple:#7F77DD;--purple-lt:#26215C;
+}}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);padding:1.5rem 1rem 3rem;min-height:100vh}
+.page{max-width:920px;margin:0 auto}
+h1{font-size:20px;font-weight:600;margin-bottom:3px}
+.subtitle{font-size:12px;color:var(--text2);margin-bottom:1.5rem}
+.card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--rl);padding:1.25rem;margin-bottom:1rem}
+.sec-title{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-bottom:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:1rem}
+@media(max-width:560px){.grid3{grid-template-columns:1fr 1fr}}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:12px;color:var(--text2);font-weight:500}
+select{width:100%;padding:7px 28px 7px 10px;font-size:13px;border:0.5px solid var(--border2);border-radius:var(--r);background:var(--surface2);color:var(--text);cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%23888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+select:focus{outline:2px solid var(--blue);outline-offset:1px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
+.tabs,.unit-toggle{display:flex;border:0.5px solid var(--border2);border-radius:var(--r);overflow:hidden}
+.tab,.ubtn{padding:6px 14px;font-size:12px;border:none;cursor:pointer;background:transparent;color:var(--text2);transition:background .12s}
+.tab+.tab,.ubtn+.ubtn{border-left:0.5px solid var(--border2)}
+.tab.active,.ubtn.active{background:var(--surface2);color:var(--text);font-weight:500}
+/* badges */
+.badges-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:.75rem}
+.badges-label{font-size:12px;color:var(--text2);font-weight:500;margin-right:2px}
+.std-badge{font-size:11px;font-weight:500;padding:4px 10px;border-radius:12px;cursor:pointer;border:none;line-height:1;transition:opacity .15s}
+.std-badge:hover{opacity:.8}
+.b-mil{background:#FAEEDA;color:#633806}
+.b-as{background:#E6F1FB;color:#0C447C}
+.b-iso{background:#E1F5EE;color:#085041}
+.b-asme{background:#EEEDFE;color:#3C3489}
+.b-none{background:var(--surface2);color:var(--text2);font-style:italic;cursor:default}
+@media(prefers-color-scheme:dark){
+  .b-mil{background:#412402;color:#FAC775}
+  .b-as{background:#042C53;color:#85B7EB}
+  .b-iso{background:#04342C;color:#5DCAA5}
+  .b-asme{background:#26215C;color:#AFA9EC}
+}
+/* std detail card */
+.std-card{border-radius:var(--rl);border:0.5px solid var(--border);border-left-width:3px;padding:1rem 1.25rem;margin-bottom:1rem;background:var(--surface)}
+.std-card .sc-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.std-card .sc-title{font-size:13px;font-weight:500}
+.std-card .sc-desc{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px}
+.sc-fields{display:grid;grid-template-columns:1fr 1fr;gap:5px 20px;margin-bottom:10px}
+.sc-field{font-size:12px;color:var(--text2);line-height:1.5}
+.sc-field span{color:var(--text);font-weight:500}
+.sc-div{height:.5px;background:var(--border);margin:8px 0}
+.sc-note{font-size:11px;color:var(--text2);font-style:italic;line-height:1.6}
+/* sti info */
+.sti-info{background:var(--amber-lt);border-radius:var(--r);border-left:3px solid var(--amber);padding:10px 12px;margin-bottom:1rem;font-size:12px}
+.sti-title{font-weight:600;color:var(--amber);margin-bottom:6px}
+.sti-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;color:var(--text2)}
+.sti-val{color:var(--text);font-weight:500}
+/* main layout */
+.main-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.8fr);gap:16px;margin-bottom:1rem}
+@media(max-width:600px){.main-grid{grid-template-columns:1fr}}
+.main-grid.as-layout{grid-template-columns:1fr;gap:12px}
+.diag-bg{background:var(--surface2);border-radius:var(--rl);border:0.5px solid var(--border);padding:1rem}
+/* metric cards */
+.mc-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem}
+.mc{background:var(--surface2);border-radius:var(--r);padding:10px 12px}
+.mc-label{font-size:11px;color:var(--text2);margin-bottom:3px}
+.mc-val{font-size:17px;font-weight:600;color:var(--text);line-height:1.2}
+.mc-sub{font-size:10px;color:var(--text3);margin-top:2px}
+/* drill table */
+.dt-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:5px 8px;font-size:11px;font-weight:600;color:var(--text3);border-bottom:.5px solid var(--border);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+td{padding:6px 8px;border-bottom:.5px solid var(--border);color:var(--text);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tbody tr{cursor:pointer;transition:background .12s}
+tbody tr:hover td{background:var(--surface2)}
+tbody tr.sel td{background:var(--blue-lt);color:var(--blue)}
+.badge{font-size:10px;padding:2px 7px;border-radius:10px;display:inline-block;font-weight:500;white-space:nowrap}
+.bd-blue{background:var(--blue-lt);color:var(--blue)}
+.bd-amber{background:var(--amber-lt);color:var(--amber)}
+.eb-wrap{height:6px;background:var(--border);border-radius:4px;overflow:hidden;min-width:40px;flex:1}
+.eb{height:100%;border-radius:4px;transition:width .3s}
+.note-box{background:var(--surface2);border-radius:var(--r);padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6;margin-top:.75rem}
+.note-box strong{color:var(--text)}
+/* legend */
+.legend{display:flex;flex-wrap:wrap;gap:10px;padding:8px 12px;background:var(--surface2);border-radius:var(--r);border:.5px solid var(--border);margin-bottom:.75rem;font-size:11px}
+.leg{display:flex;align-items:center;gap:5px;color:var(--text2)}
+.lsw{width:12px;height:4px;border-radius:2px;flex-shrink:0}
+.lsw-circle{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+footer{text-align:center;font-size:11px;color:var(--text3);margin-top:2rem;padding-top:1rem;border-top:.5px solid var(--border)}
 </style>
 </head>
 <body>
 <div class="page">
-
-  <header>
-    <h1>Thread Calculator</h1>
-    <p>UNC/UNF · Metric ISO · STI Screw Thread Insert — drill sizes, engagement depth, cross-section diagram</p>
-  </header>
+  <h1>Thread Calculator</h1>
+  <p class="subtitle">UNC/UNF · Metric ISO · STI · AS5202 Port Threads — MIL / AS / ASME / ISO standard references</p>
 
   <div class="card">
-    <div class="section-title">Thread selection</div>
-    <div class="controls-grid">
-      <div class="field">
-        <label>Standard</label>
+    <div class="sec-title">Thread selection</div>
+    <div class="grid3">
+      <div class="field"><label>Standard</label>
         <select id="std" onchange="onStdChange()">
           <option value="unified">Unified (UNC / UNF)</option>
           <option value="metric">Metric (ISO)</option>
           <option value="sti">STI — Screw Thread Insert</option>
+          <option value="as5202">AS5202 — Port Threads</option>
         </select>
       </div>
-      <div class="field">
-        <label>Size</label>
-        <select id="size" onchange="onSizeChange()"></select>
-      </div>
-      <div class="field">
-        <label>Fit class</label>
-        <select id="cls" onchange="update()"></select>
-      </div>
+      <div class="field"><label>Size</label><select id="size" onchange="onSizeChange()"></select></div>
+      <div class="field"><label>Fit class</label><select id="cls" onchange="update()"></select></div>
     </div>
-
     <div class="row">
       <div class="tabs">
         <button class="tab active" id="tab-ext" onclick="setTab('external',this)">External</button>
@@ -260,36 +135,40 @@
       </div>
       <div class="unit-toggle">
         <button class="ubtn active" id="btn-mm" onclick="setUnit('mm')">mm</button>
-        <button class="ubtn" id="btn-in" onclick="setUnit('inch')">inch</button>
+        <button class="ubtn" id="btn-in" onclick="setUnit('in')">inch</button>
       </div>
     </div>
   </div>
 
+  <div class="badges-row" id="badges-row"><span class="badges-label">Standards:</span></div>
+  <div id="std-card" style="display:none" class="std-card"></div>
   <div id="sti-panel" style="display:none" class="sti-info">
-    <div class="sti-title">STI Insert details</div>
+    <div class="sti-title">STI insert details</div>
     <div class="sti-grid" id="sti-detail"></div>
   </div>
 
-  <div class="main-grid">
+  <!-- AS5202 legend shown only for that mode -->
+  <div id="as-legend" style="display:none" class="legend">
+    <div class="leg"><div class="lsw" style="background:#0F6E56"></div>Spotface</div>
+    <div class="leg"><div class="lsw" style="background:#BA7517"></div>Chamfer</div>
+    <div class="leg"><div class="lsw" style="background:#534AB7"></div>Counterbore</div>
+    <div class="leg"><div class="lsw" style="background:#185FA5"></div>Thread profile</div>
+    <div class="leg"><div class="lsw-circle" style="background:#E24B4A"></div>O-ring</div>
+  </div>
+
+  <div class="main-grid" id="main-grid">
     <div class="diag-bg">
       <svg id="vsvg" width="100%" viewBox="0 0 200 310" role="img">
         <title>Thread cross-section</title>
-        <desc>Vertical engineering cross-section of selected thread with dimension callouts.</desc>
+        <desc>Vertical engineering cross-section with dimension callouts.</desc>
       </svg>
     </div>
     <div>
-      <div class="metric-cards" id="cards"></div>
-      <div class="section-title" id="drill-section-title">Drill sizes — click row to visualize</div>
-      <div class="drill-table-wrap">
+      <div class="mc-grid" id="cards"></div>
+      <div class="sec-title" id="drill-title">Drill sizes — click row to visualize</div>
+      <div class="dt-wrap">
         <table>
-          <thead>
-            <tr>
-              <th>Drill</th>
-              <th id="diam-head">Diameter</th>
-              <th>Engagement</th>
-              <th></th>
-            </tr>
-          </thead>
+          <thead><tr><th>Drill</th><th id="diam-head">Diameter</th><th>Engagement</th><th></th></tr></thead>
           <tbody id="drill-tbody"></tbody>
         </table>
       </div>
@@ -297,352 +176,631 @@
     </div>
   </div>
 
-  <footer>Thread Calculator &nbsp;·&nbsp; For reference use. Always verify critical dimensions against applicable standards (ASME B1.1, ISO 724, MIL-S-8846).
-  </footer>
-
+  <footer>Thread Calculator · For reference use only. Verify critical dimensions against ASME B1.1, ISO 724, MIL-S-8846, AS8879, AS5202 and applicable engineering drawings.</footer>
 </div>
-
 <script>
+/* ── DATA ── */
 const uData=[
-  {label:'#0-80 UNF',major:0.0600,tpi:80},{label:'#2-56 UNC',major:0.0860,tpi:56},
-  {label:'#4-40 UNC',major:0.1120,tpi:40},{label:'#6-32 UNC',major:0.1380,tpi:32},
-  {label:'#8-32 UNC',major:0.1640,tpi:32},{label:'#10-24 UNC',major:0.1900,tpi:24},
-  {label:'#10-32 UNF',major:0.1900,tpi:32},{label:'1/4-20 UNC',major:0.2500,tpi:20},
-  {label:'1/4-28 UNF',major:0.2500,tpi:28},{label:'5/16-18 UNC',major:0.3125,tpi:18},
-  {label:'5/16-24 UNF',major:0.3125,tpi:24},{label:'3/8-16 UNC',major:0.3750,tpi:16},
-  {label:'3/8-24 UNF',major:0.3750,tpi:24},{label:'7/16-14 UNC',major:0.4375,tpi:14},
-  {label:'7/16-20 UNF',major:0.4375,tpi:20},{label:'1/2-13 UNC',major:0.5000,tpi:13},
-  {label:'1/2-20 UNF',major:0.5000,tpi:20},{label:'9/16-12 UNC',major:0.5625,tpi:12},
-  {label:'9/16-18 UNF',major:0.5625,tpi:18},{label:'5/8-11 UNC',major:0.6250,tpi:11},
-  {label:'5/8-18 UNF',major:0.6250,tpi:18},{label:'3/4-10 UNC',major:0.7500,tpi:10},
-  {label:'3/4-16 UNF',major:0.7500,tpi:16},{label:'7/8-9 UNC',major:0.8750,tpi:9},
-  {label:'7/8-14 UNF',major:0.8750,tpi:14},{label:'1-8 UNC',major:1.0000,tpi:8},
-  {label:'1-12 UNF',major:1.0000,tpi:12},{label:'1-14 UNF',major:1.0000,tpi:14},
-  {label:'1 1/4-7 UNC',major:1.2500,tpi:7},{label:'1 1/2-6 UNC',major:1.5000,tpi:6},
+  {label:'#0-80 UNF',major:.0600,tpi:80},{label:'#2-56 UNC',major:.0860,tpi:56},
+  {label:'#4-40 UNC',major:.1120,tpi:40},{label:'#6-32 UNC',major:.1380,tpi:32},
+  {label:'#8-32 UNC',major:.1640,tpi:32},{label:'#10-24 UNC',major:.1900,tpi:24},
+  {label:'#10-32 UNF',major:.1900,tpi:32},{label:'1/4-20 UNC',major:.2500,tpi:20},
+  {label:'1/4-28 UNF',major:.2500,tpi:28},{label:'5/16-18 UNC',major:.3125,tpi:18},
+  {label:'5/16-24 UNF',major:.3125,tpi:24},{label:'3/8-16 UNC',major:.3750,tpi:16},
+  {label:'3/8-24 UNF',major:.3750,tpi:24},{label:'7/16-14 UNC',major:.4375,tpi:14},
+  {label:'7/16-20 UNF',major:.4375,tpi:20},{label:'1/2-13 UNC',major:.5000,tpi:13},
+  {label:'1/2-20 UNF',major:.5000,tpi:20},{label:'9/16-12 UNC',major:.5625,tpi:12},
+  {label:'9/16-18 UNF',major:.5625,tpi:18},{label:'5/8-11 UNC',major:.6250,tpi:11},
+  {label:'5/8-18 UNF',major:.6250,tpi:18},{label:'3/4-10 UNC',major:.7500,tpi:10},
+  {label:'3/4-16 UNF',major:.7500,tpi:16},{label:'7/8-9 UNC',major:.8750,tpi:9},
+  {label:'7/8-14 UNF',major:.8750,tpi:14},{label:'1-8 UNC',major:1.0000,tpi:8},
+  {label:'1-12 UNF',major:1.0000,tpi:12},{label:'1 1/4-7 UNC',major:1.2500,tpi:7},
+  {label:'1 1/2-6 UNC',major:1.5000,tpi:6},
 ];
 const mData=[
-  {label:'M1.6 x 0.35',d:1.6,p:0.35},{label:'M2 x 0.4',d:2.0,p:0.4},
-  {label:'M2.5 x 0.45',d:2.5,p:0.45},{label:'M3 x 0.5',d:3.0,p:0.5},
-  {label:'M3.5 x 0.6',d:3.5,p:0.6},{label:'M4 x 0.7',d:4.0,p:0.7},
-  {label:'M5 x 0.8',d:5.0,p:0.8},{label:'M6 x 1.0',d:6.0,p:1.0},
-  {label:'M7 x 1.0',d:7.0,p:1.0},{label:'M8 x 1.25',d:8.0,p:1.25},
-  {label:'M8 x 1.0 (fine)',d:8.0,p:1.0},{label:'M10 x 1.5',d:10.0,p:1.5},
-  {label:'M10 x 1.25 (fine)',d:10.0,p:1.25},{label:'M12 x 1.75',d:12.0,p:1.75},
-  {label:'M12 x 1.25 (fine)',d:12.0,p:1.25},{label:'M14 x 2.0',d:14.0,p:2.0},
-  {label:'M16 x 2.0',d:16.0,p:2.0},{label:'M18 x 2.5',d:18.0,p:2.5},
-  {label:'M20 x 2.5',d:20.0,p:2.5},{label:'M22 x 2.5',d:22.0,p:2.5},
-  {label:'M24 x 3.0',d:24.0,p:3.0},{label:'M27 x 3.0',d:27.0,p:3.0},
-  {label:'M30 x 3.5',d:30.0,p:3.5},{label:'M36 x 4.0',d:36.0,p:4.0},
-  {label:'M42 x 4.5',d:42.0,p:4.5},{label:'M48 x 5.0',d:48.0,p:5.0},
+  {label:'M3 x 0.5',d:3,p:.5},{label:'M4 x 0.7',d:4,p:.7},
+  {label:'M5 x 0.8',d:5,p:.8},{label:'M6 x 1.0',d:6,p:1.0},
+  {label:'M8 x 1.25',d:8,p:1.25},{label:'M8 x 1.0 (fine)',d:8,p:1.0},
+  {label:'M10 x 1.5',d:10,p:1.5},{label:'M10 x 1.25 (fine)',d:10,p:1.25},
+  {label:'M12 x 1.75',d:12,p:1.75},{label:'M12 x 1.25 (fine)',d:12,p:1.25},
+  {label:'M14 x 2.0',d:14,p:2.0},{label:'M16 x 2.0',d:16,p:2.0},
+  {label:'M20 x 2.5',d:20,p:2.5},{label:'M24 x 3.0',d:24,p:3.0},
+  {label:'M30 x 3.5',d:30,p:3.5},{label:'M36 x 4.0',d:36,p:4.0},
 ];
 const stiData=[
-  {label:'STI #4-40',boltMajorIn:0.1120,boltTpi:40,stiTpi:40,stiMajorIn:0.1434,stiDrillIn:0.1285,stiDrillName:'#30'},
-  {label:'STI #6-32',boltMajorIn:0.1380,boltTpi:32,stiTpi:32,stiMajorIn:0.1695,stiDrillIn:0.1495,stiDrillName:'#25'},
-  {label:'STI #8-32',boltMajorIn:0.1640,boltTpi:32,stiTpi:32,stiMajorIn:0.2010,stiDrillIn:0.1800,stiDrillName:'#15'},
-  {label:'STI #10-24',boltMajorIn:0.1900,boltTpi:24,stiTpi:24,stiMajorIn:0.2280,stiDrillIn:0.2010,stiDrillName:'#7'},
-  {label:'STI #10-32',boltMajorIn:0.1900,boltTpi:32,stiTpi:32,stiMajorIn:0.2280,stiDrillIn:0.2090,stiDrillName:'#4'},
-  {label:'STI 1/4-20',boltMajorIn:0.2500,boltTpi:20,stiTpi:20,stiMajorIn:0.3125,stiDrillIn:0.2720,stiDrillName:'I'},
-  {label:'STI 1/4-28',boltMajorIn:0.2500,boltTpi:28,stiTpi:28,stiMajorIn:0.3125,stiDrillIn:0.2812,stiDrillName:'9/32"'},
-  {label:'STI 5/16-18',boltMajorIn:0.3125,boltTpi:18,stiTpi:18,stiMajorIn:0.3750,stiDrillIn:0.3320,stiDrillName:'Q'},
-  {label:'STI 5/16-24',boltMajorIn:0.3125,boltTpi:24,stiTpi:24,stiMajorIn:0.3750,stiDrillIn:0.3438,stiDrillName:'11/32"'},
-  {label:'STI 3/8-16',boltMajorIn:0.3750,boltTpi:16,stiTpi:16,stiMajorIn:0.4375,stiDrillIn:0.3906,stiDrillName:'25/64"'},
-  {label:'STI 3/8-24',boltMajorIn:0.3750,boltTpi:24,stiTpi:24,stiMajorIn:0.4375,stiDrillIn:0.4062,stiDrillName:'13/32"'},
-  {label:'STI 7/16-14',boltMajorIn:0.4375,boltTpi:14,stiTpi:14,stiMajorIn:0.5000,stiDrillIn:0.4531,stiDrillName:'29/64"'},
-  {label:'STI 1/2-13',boltMajorIn:0.5000,boltTpi:13,stiTpi:13,stiMajorIn:0.5625,stiDrillIn:0.5156,stiDrillName:'33/64"'},
-  {label:'STI 1/2-20',boltMajorIn:0.5000,boltTpi:20,stiTpi:20,stiMajorIn:0.5625,stiDrillIn:0.5312,stiDrillName:'17/32"'},
-  {label:'STI 5/8-11',boltMajorIn:0.6250,boltTpi:11,stiTpi:11,stiMajorIn:0.7500,stiDrillIn:0.6875,stiDrillName:'11/16"'},
-  {label:'STI 3/4-10',boltMajorIn:0.7500,boltTpi:10,stiTpi:10,stiMajorIn:0.8750,stiDrillIn:0.8125,stiDrillName:'13/16"'},
-  {label:'STI 7/8-9',boltMajorIn:0.8750,boltTpi:9,stiTpi:9,stiMajorIn:1.0000,stiDrillIn:0.9375,stiDrillName:'15/16"'},
-  {label:'STI 1-8',boltMajorIn:1.0000,boltTpi:8,stiTpi:8,stiMajorIn:1.1250,stiDrillIn:1.0625,stiDrillName:'1-1/16"'},
+  {label:'STI #4-40',bMaj:.1120,bTpi:40,sTpi:40,sMaj:.1434,sDrill:.1285,sDrillN:'#30'},
+  {label:'STI #6-32',bMaj:.1380,bTpi:32,sTpi:32,sMaj:.1695,sDrill:.1495,sDrillN:'#25'},
+  {label:'STI #8-32',bMaj:.1640,bTpi:32,sTpi:32,sMaj:.2010,sDrill:.1800,sDrillN:'#15'},
+  {label:'STI #10-24',bMaj:.1900,bTpi:24,sTpi:24,sMaj:.2280,sDrill:.2010,sDrillN:'#7'},
+  {label:'STI #10-32',bMaj:.1900,bTpi:32,sTpi:32,sMaj:.2280,sDrill:.2090,sDrillN:'#4'},
+  {label:'STI 1/4-20',bMaj:.2500,bTpi:20,sTpi:20,sMaj:.3125,sDrill:.2720,sDrillN:'I'},
+  {label:'STI 1/4-28',bMaj:.2500,bTpi:28,sTpi:28,sMaj:.3125,sDrill:.2812,sDrillN:'9/32"'},
+  {label:'STI 5/16-18',bMaj:.3125,bTpi:18,sTpi:18,sMaj:.3750,sDrill:.3320,sDrillN:'Q'},
+  {label:'STI 5/16-24',bMaj:.3125,bTpi:24,sTpi:24,sMaj:.3750,sDrill:.3438,sDrillN:'11/32"'},
+  {label:'STI 3/8-16',bMaj:.3750,bTpi:16,sTpi:16,sMaj:.4375,sDrill:.3906,sDrillN:'25/64"'},
+  {label:'STI 3/8-24',bMaj:.3750,bTpi:24,sTpi:24,sMaj:.4375,sDrill:.4062,sDrillN:'13/32"'},
+  {label:'STI 7/16-14',bMaj:.4375,bTpi:14,sTpi:14,sMaj:.5000,sDrill:.4531,sDrillN:'29/64"'},
+  {label:'STI 1/2-13',bMaj:.5000,bTpi:13,sTpi:13,sMaj:.5625,sDrill:.5156,sDrillN:'33/64"'},
+  {label:'STI 1/2-20',bMaj:.5000,bTpi:20,sTpi:20,sMaj:.5625,sDrill:.5312,sDrillN:'17/32"'},
+  {label:'STI 5/8-11',bMaj:.6250,bTpi:11,sTpi:11,sMaj:.7500,sDrill:.6875,sDrillN:'11/16"'},
+  {label:'STI 3/4-10',bMaj:.7500,bTpi:10,sTpi:10,sMaj:.8750,sDrill:.8125,sDrillN:'13/16"'},
+  {label:'STI 7/8-9',bMaj:.8750,bTpi:9,sTpi:9,sMaj:1.000,sDrill:.9375,sDrillN:'15/16"'},
+  {label:'STI 1-8',bMaj:1.000,bTpi:8,sTpi:8,sMaj:1.125,sDrill:1.0625,sDrillN:'1-1/16"'},
+];
+const asData=[
+  {label:'-2  (5/16-24 UNF)',dash:2,maj:.3125,tpi:24,engIn:.188,sfIn:.562,cbIn:.375,chamDeg:15,oring:{od:.424,cs:.070}},
+  {label:'-3  (3/8-24 UNF)', dash:3,maj:.3750,tpi:24,engIn:.219,sfIn:.625,cbIn:.438,chamDeg:15,oring:{od:.489,cs:.070}},
+  {label:'-4  (7/16-20 UNF)',dash:4,maj:.4375,tpi:20,engIn:.250,sfIn:.750,cbIn:.500,chamDeg:15,oring:{od:.551,cs:.078}},
+  {label:'-5  (1/2-20 UNF)', dash:5,maj:.5000,tpi:20,engIn:.250,sfIn:.812,cbIn:.562,chamDeg:15,oring:{od:.614,cs:.078}},
+  {label:'-6  (9/16-18 UNF)',dash:6,maj:.5625,tpi:18,engIn:.278,sfIn:.938,cbIn:.625,chamDeg:15,oring:{od:.676,cs:.078}},
+  {label:'-8  (3/4-16 UNF)', dash:8,maj:.7500,tpi:16,engIn:.313,sfIn:1.125,cbIn:.812,chamDeg:15,oring:{od:.864,cs:.103}},
+  {label:'-10 (7/8-14 UNF)', dash:10,maj:.8750,tpi:14,engIn:.357,sfIn:1.312,cbIn:.938,chamDeg:15,oring:{od:.989,cs:.103}},
+  {label:'-12 (1-1/16-12)',  dash:12,maj:1.0625,tpi:12,engIn:.417,sfIn:1.562,cbIn:1.125,chamDeg:15,oring:{od:1.176,cs:.103}},
+  {label:'-14 (1-3/16-12)',  dash:14,maj:1.1875,tpi:12,engIn:.417,sfIn:1.750,cbIn:1.250,chamDeg:15,oring:{od:1.301,cs:.116}},
+  {label:'-16 (1-5/16-12)',  dash:16,maj:1.3125,tpi:12,engIn:.417,sfIn:1.875,cbIn:1.375,chamDeg:15,oring:{od:1.426,cs:.116}},
+  {label:'-20 (1-5/8-12)',   dash:20,maj:1.6250,tpi:12,engIn:.417,sfIn:2.250,cbIn:1.688,chamDeg:15,oring:{od:1.739,cs:.139}},
+  {label:'-24 (1-7/8-12)',   dash:24,maj:1.8750,tpi:12,engIn:.417,sfIn:2.562,cbIn:1.938,chamDeg:15,oring:{od:1.989,cs:.139}},
+  {label:'-32 (2-1/2-12)',   dash:32,maj:2.500, tpi:12,engIn:.417,sfIn:3.250,cbIn:2.562,chamDeg:15,oring:{od:2.614,cs:.139}},
 ];
 
-const uClasses=['2A/2B (standard)','3A/3B (precision)','1A/1B (free fit)'];
-const mClasses=['6g/6H (standard)','4g6g/4H5H (fine)','6e/7H (loose)'];
-const stiClasses=['Class 3B insert','Class 2B insert'];
+/* ── STANDARDS MAP ── */
+const stdMap={
+  unified:[
+    {id:'ASME-B1.1',label:'ASME B1.1',cls:'b-asme',
+     title:'ASME B1.1 — Unified Inch Screw Threads',
+     desc:'Defines Unified Thread Standard (UTS) geometry, tolerance classes, and inspection for inch-based fastener threads (UNC, UNF, UNEF, UNS).',
+     fields:[
+       {k:'Thread form',v:'60° symmetric V-profile'},
+       {k:'Tolerance system',v:'Classes 1A/1B, 2A/2B, 3A/3B'},
+       {k:'Pitch diameter tol.',v:'Class 2A/2B for general use'},
+       {k:'Root form',v:'Flat or rounded root permitted'},
+       {k:'Crest form',v:'Flat crest (truncated)'},
+       {k:'Inspection method',v:'GO/NO-GO ring & plug gauges'},
+     ],
+     note:'All UNC/UNF thread geometry in this calculator references ASME B1.1. Class 2A/2B is the default for commercial fasteners.'},
+    {id:'AS8879',label:'AS8879',cls:'b-as',
+     title:'AS8879 — Screw Threads, Aerospace',
+     desc:'SAE Aerospace Standard for inch-series threaded fasteners used in aerospace structures and systems. Supersedes MIL-S-8879.',
+     fields:[
+       {k:'Coverage',v:'UNC/UNF #0 through 1-1/2"'},
+       {k:'Required class',v:'3A external / 3B internal'},
+       {k:'Min thread engagement',v:'1.0 × nominal diameter'},
+       {k:'Surface finish',v:'63 µin Ra max on thread flanks'},
+       {k:'Plating allowance',v:'Must be accounted for pre-plate'},
+       {k:'Inspection',v:'GO/NO-GO gauges, SRG method'},
+     ],
+     note:'Tighter tolerances than ASME B1.1. Always select Class 3A/3B for AS8879-compliant fasteners. Replaces MIL-S-8879C.'},
+  ],
+  metric:[
+    {id:'ISO-724',label:'ISO 724',cls:'b-iso',
+     title:'ISO 724 — Metric Screw Thread Geometry',
+     desc:'Defines the fundamental triangle, pitch, major/minor/pitch diameters, and thread form for general-purpose metric threads.',
+     fields:[
+       {k:'Thread form',v:'60° ISO metric profile'},
+       {k:'Pitch series',v:'Coarse (preferred) and fine'},
+       {k:'Root radius',v:'0.125H min (ISO 68-1)'},
+       {k:'Crest',v:'Flat or rounded to tolerance'},
+       {k:'Coverage',v:'M1 through M68 and beyond'},
+       {k:'Companion std.',v:'ISO 965 (tolerances)'},
+     ],
+     note:'All metric geometry in this calculator follows ISO 724 / ISO 68-1.'},
+    {id:'ISO-965',label:'ISO 965',cls:'b-iso',
+     title:'ISO 965 — Metric Thread Tolerances',
+     desc:'Specifies tolerance classes, fundamental deviations, and allowances for metric screw threads per ISO 724.',
+     fields:[
+       {k:'Standard external class',v:'6g'},
+       {k:'Standard internal class',v:'6H'},
+       {k:'Fine external class',v:'4g6g'},
+       {k:'Fine internal class',v:'4H5H'},
+       {k:'Loose external class',v:'6e'},
+       {k:'Loose internal class',v:'7H'},
+     ],
+     note:'Use 6g/6H for general applications. 4g6g/4H5H for precision mating parts. 6e/7H for coated or plated fasteners.'},
+  ],
+  sti:[
+    {id:'MIL-S-8846',label:'MIL-S-8846',cls:'b-mil',
+     title:'MIL-S-8846 — Helical Coil Screw Thread Inserts',
+     desc:'Military specification governing design, material, and testing of helical coil screw thread inserts (Heli-Coil type) for aerospace and defense applications.',
+     fields:[
+       {k:'Insert material',v:'302/304 CRES stainless coil'},
+       {k:'Thread form',v:'60° unified, Class 3B internal'},
+       {k:'Available lengths',v:'1D, 1.5D, 2D, 2.5D, 3D'},
+       {k:'Min parent hardness',v:'Softer than insert wire'},
+       {k:'Torque-out test',v:'Required per §4.6'},
+       {k:'Insert types',v:'Free-running & self-locking'},
+     ],
+     note:'STI tap drill and insert geometry in this calculator conform to MIL-S-8846 dimensional tables. Self-locking inserts per MIL-S-8846 Class II.'},
+    {id:'AS8879-STI',label:'AS8879',cls:'b-as',
+     title:'AS8879 — Bolt Thread Into STI Insert',
+     desc:'The bolt or fastener thread engaging the STI insert must satisfy AS8879 Class 3A external thread requirements.',
+     fields:[
+       {k:'Bolt thread class',v:'3A (external) required'},
+       {k:'Thread engagement',v:'Full insert length (1D to 3D)'},
+       {k:'Surface finish',v:'63 µin Ra max on flanks'},
+       {k:'Material per AS8879',v:'See AS8879 material tables'},
+       {k:'Inspection',v:'GO/NO-GO gauges required'},
+     ],
+     note:'A Class 3A bolt thread is mandatory when engaging an MIL-S-8846 insert in a flight-critical application.'},
+  ],
+  as5202:[
+    {id:'AS5202',label:'AS5202',cls:'b-as',
+     title:'AS5202 — Port Threads, Straight Thread O-Ring Boss',
+     desc:'SAE Aerospace Standard defining straight-thread O-ring boss (ORB) ports for hydraulic, pneumatic, and fluid power systems. Supersedes MIL-F-5521.',
+     fields:[
+       {k:'Thread form',v:'UNF per ASME B1.1'},
+       {k:'Seal method',v:'O-ring on spotface (not thread seal)'},
+       {k:'Port thread class',v:'2B internal'},
+       {k:'Max working pressure',v:'3000 psi (O-ring installed)'},
+       {k:'Spotface finish',v:'63 µin Ra max, perp. ±0.005"'},
+       {k:'Chamfer lead-in',v:'15° × 1 thread pitch min'},
+       {k:'Min thread engagement',v:'3 full threads minimum'},
+       {k:'O-ring spec',v:'AS568 O-ring sizes'},
+     ],
+     note:'Sealing is achieved entirely by the O-ring against the spotface. Threads provide mechanical retention only. Never use thread sealant.'},
+    {id:'MS33649',label:'MS33649',cls:'b-mil',
+     title:'MS33649 — Straight Thread Port (Military Std.)',
+     desc:'Military standard equivalent to AS5202 for straight-thread O-ring boss ports used on MIL/DoD drawings and specifications.',
+     fields:[
+       {k:'Relation to AS5202',v:'Dimensionally identical'},
+       {k:'Thread class',v:'2B internal (port body)'},
+       {k:'O-ring groove',v:'Per MS33649 Table II'},
+       {k:'Spotface',v:'Required, 63 µin Ra max'},
+       {k:'Usage',v:'MIL/DoD drawings & contracts'},
+       {k:'Interchangeability',v:'Fully interchangeable with AS5202'},
+     ],
+     note:'Use MS33649 callout on MIL drawings; AS5202 on SAE/commercial aerospace drawings. Dimensions are fully interchangeable.'},
+  ],
+};
 
+const uCls=['2A/2B (standard)','3A/3B (precision)','1A/1B (free fit)'];
+const mCls=['6g/6H (standard)','4g6g/4H5H (fine)','6e/7H (loose)'];
+const sCls=['Class 3B insert','Class 2B insert'];
+const aCls=['Class 2B (standard)','Class 3B (precision)'];
+
+const bColors={'b-mil':'#854F0B','b-as':'#185FA5','b-iso':'#0F6E56','b-asme':'#534AB7'};
+
+/* ── DRILL DATA ── */
 const drillsIn=[
-  {name:'#80',d:.0135},{name:'#79',d:.0145},{name:'#78',d:.016},{name:'#77',d:.018},
-  {name:'#76',d:.020},{name:'#75',d:.021},{name:'#74',d:.0225},{name:'#73',d:.024},
-  {name:'#72',d:.025},{name:'#71',d:.026},{name:'#70',d:.028},{name:'#69',d:.0292},
-  {name:'#68',d:.031},{name:'#67',d:.032},{name:'#66',d:.033},{name:'#65',d:.035},
-  {name:'#64',d:.036},{name:'#63',d:.037},{name:'#62',d:.038},{name:'#61',d:.039},
-  {name:'#60',d:.040},{name:'#59',d:.041},{name:'#58',d:.042},{name:'#57',d:.043},
-  {name:'#56',d:.0465},{name:'3/64"',d:.046875},{name:'#55',d:.052},{name:'#54',d:.055},
-  {name:'#53',d:.0595},{name:'1/16"',d:.0625},{name:'#52',d:.0635},{name:'#51',d:.067},
-  {name:'#50',d:.070},{name:'#49',d:.073},{name:'#48',d:.076},{name:'5/64"',d:.078125},
-  {name:'#47',d:.0785},{name:'#46',d:.081},{name:'#45',d:.082},{name:'#44',d:.086},
-  {name:'#43',d:.089},{name:'#42',d:.0935},{name:'3/32"',d:.09375},{name:'#41',d:.096},
-  {name:'#40',d:.098},{name:'#39',d:.0995},{name:'#38',d:.1015},{name:'#37',d:.104},
-  {name:'#36',d:.1065},{name:'7/64"',d:.109375},{name:'#35',d:.110},{name:'#34',d:.111},
-  {name:'#33',d:.113},{name:'#32',d:.116},{name:'#31',d:.120},{name:'1/8"',d:.125},
-  {name:'#30',d:.1285},{name:'#29',d:.136},{name:'#28',d:.1405},{name:'9/64"',d:.140625},
-  {name:'#27',d:.144},{name:'#26',d:.147},{name:'#25',d:.1495},{name:'#24',d:.152},
-  {name:'#23',d:.154},{name:'5/32"',d:.15625},{name:'#22',d:.157},{name:'#21',d:.159},
-  {name:'#20',d:.161},{name:'#19',d:.166},{name:'#18',d:.1695},{name:'11/64"',d:.171875},
-  {name:'#17',d:.173},{name:'#16',d:.177},{name:'#15',d:.180},{name:'#14',d:.182},
-  {name:'#13',d:.185},{name:'3/16"',d:.1875},{name:'#12',d:.189},{name:'#11',d:.191},
-  {name:'#10',d:.1935},{name:'#9',d:.196},{name:'#8',d:.199},{name:'#7',d:.201},
-  {name:'13/64"',d:.203125},{name:'#6',d:.204},{name:'#5',d:.2055},{name:'#4',d:.209},
-  {name:'#3',d:.213},{name:'7/32"',d:.21875},{name:'#2',d:.221},{name:'#1',d:.228},
-  {name:'A',d:.234},{name:'15/64"',d:.234375},{name:'B',d:.238},{name:'C',d:.242},
-  {name:'D',d:.246},{name:'1/4"',d:.250},{name:'F',d:.257},{name:'G',d:.261},
-  {name:'17/64"',d:.265625},{name:'H',d:.266},{name:'I',d:.272},{name:'J',d:.277},
-  {name:'K',d:.281},{name:'9/32"',d:.28125},{name:'L',d:.290},{name:'M',d:.295},
-  {name:'19/64"',d:.296875},{name:'N',d:.302},{name:'5/16"',d:.3125},{name:'O',d:.316},
-  {name:'P',d:.323},{name:'21/64"',d:.328125},{name:'Q',d:.332},{name:'R',d:.339},
-  {name:'11/32"',d:.34375},{name:'S',d:.348},{name:'T',d:.358},{name:'23/64"',d:.359375},
-  {name:'U',d:.368},{name:'3/8"',d:.375},{name:'V',d:.377},{name:'W',d:.386},
-  {name:'25/64"',d:.390625},{name:'X',d:.397},{name:'Y',d:.404},{name:'13/32"',d:.40625},
-  {name:'Z',d:.413},{name:'27/64"',d:.421875},{name:'7/16"',d:.4375},
-  {name:'29/64"',d:.453125},{name:'15/32"',d:.46875},{name:'31/64"',d:.484375},
-  {name:'1/2"',d:.500},{name:'33/64"',d:.515625},{name:'17/32"',d:.53125},
-  {name:'35/64"',d:.546875},{name:'9/16"',d:.5625},{name:'37/64"',d:.578125},
-  {name:'19/32"',d:.59375},{name:'39/64"',d:.609375},{name:'5/8"',d:.625},
-  {name:'41/64"',d:.640625},{name:'21/32"',d:.65625},{name:'43/64"',d:.671875},
-  {name:'11/16"',d:.6875},{name:'45/64"',d:.703125},{name:'23/32"',d:.71875},
-  {name:'3/4"',d:.750},{name:'49/64"',d:.765625},{name:'25/32"',d:.78125},
-  {name:'51/64"',d:.796875},{name:'13/16"',d:.8125},{name:'53/64"',d:.828125},
-  {name:'27/32"',d:.84375},{name:'7/8"',d:.875},{name:'57/64"',d:.890625},
-  {name:'29/32"',d:.90625},{name:'15/16"',d:.9375},{name:'1"',d:1.000},
-  {name:'1-1/16"',d:1.0625},{name:'1-1/8"',d:1.125},{name:'1-3/16"',d:1.1875},
-  {name:'1-1/4"',d:1.250},{name:'1-5/16"',d:1.3125},{name:'1-3/8"',d:1.375},
-  {name:'1-7/16"',d:1.4375},{name:'1-1/2"',d:1.500},
+  {n:'#80',d:.0135},{n:'#79',d:.0145},{n:'#78',d:.016},{n:'#77',d:.018},
+  {n:'#76',d:.020},{n:'#75',d:.021},{n:'#74',d:.0225},{n:'#73',d:.024},
+  {n:'#72',d:.025},{n:'#71',d:.026},{n:'#70',d:.028},{n:'#69',d:.0292},
+  {n:'#68',d:.031},{n:'#67',d:.032},{n:'#66',d:.033},{n:'#65',d:.035},
+  {n:'#64',d:.036},{n:'#63',d:.037},{n:'#62',d:.038},{n:'#61',d:.039},
+  {n:'#60',d:.040},{n:'#59',d:.041},{n:'#58',d:.042},{n:'#57',d:.043},
+  {n:'#56',d:.0465},{n:'3/64"',d:.046875},{n:'#55',d:.052},{n:'#54',d:.055},
+  {n:'#53',d:.0595},{n:'1/16"',d:.0625},{n:'#52',d:.0635},{n:'#51',d:.067},
+  {n:'#50',d:.070},{n:'#49',d:.073},{n:'#48',d:.076},{n:'5/64"',d:.078125},
+  {n:'#47',d:.0785},{n:'#46',d:.081},{n:'#45',d:.082},{n:'#44',d:.086},
+  {n:'#43',d:.089},{n:'#42',d:.0935},{n:'3/32"',d:.09375},{n:'#41',d:.096},
+  {n:'#40',d:.098},{n:'#39',d:.0995},{n:'#38',d:.1015},{n:'#37',d:.104},
+  {n:'#36',d:.1065},{n:'7/64"',d:.109375},{n:'#35',d:.110},{n:'#34',d:.111},
+  {n:'#33',d:.113},{n:'#32',d:.116},{n:'#31',d:.120},{n:'1/8"',d:.125},
+  {n:'#30',d:.1285},{n:'#29',d:.136},{n:'#28',d:.1405},{n:'9/64"',d:.140625},
+  {n:'#27',d:.144},{n:'#26',d:.147},{n:'#25',d:.1495},{n:'#24',d:.152},
+  {n:'#23',d:.154},{n:'5/32"',d:.15625},{n:'#22',d:.157},{n:'#21',d:.159},
+  {n:'#20',d:.161},{n:'#19',d:.166},{n:'#18',d:.1695},{n:'11/64"',d:.171875},
+  {n:'#17',d:.173},{n:'#16',d:.177},{n:'#15',d:.180},{n:'#14',d:.182},
+  {n:'#13',d:.185},{n:'3/16"',d:.1875},{n:'#12',d:.189},{n:'#11',d:.191},
+  {n:'#10',d:.1935},{n:'#9',d:.196},{n:'#8',d:.199},{n:'#7',d:.201},
+  {n:'13/64"',d:.203125},{n:'#6',d:.204},{n:'#5',d:.2055},{n:'#4',d:.209},
+  {n:'#3',d:.213},{n:'7/32"',d:.21875},{n:'#2',d:.221},{n:'#1',d:.228},
+  {n:'A',d:.234},{n:'15/64"',d:.234375},{n:'B',d:.238},{n:'C',d:.242},
+  {n:'D',d:.246},{n:'1/4"',d:.250},{n:'F',d:.257},{n:'G',d:.261},
+  {n:'17/64"',d:.265625},{n:'H',d:.266},{n:'I',d:.272},{n:'J',d:.277},
+  {n:'K',d:.281},{n:'9/32"',d:.28125},{n:'L',d:.290},{n:'M',d:.295},
+  {n:'19/64"',d:.296875},{n:'N',d:.302},{n:'5/16"',d:.3125},{n:'O',d:.316},
+  {n:'P',d:.323},{n:'21/64"',d:.328125},{n:'Q',d:.332},{n:'R',d:.339},
+  {n:'11/32"',d:.34375},{n:'S',d:.348},{n:'T',d:.358},{n:'23/64"',d:.359375},
+  {n:'U',d:.368},{n:'3/8"',d:.375},{n:'V',d:.377},{n:'W',d:.386},
+  {n:'25/64"',d:.390625},{n:'X',d:.397},{n:'Y',d:.404},{n:'13/32"',d:.40625},
+  {n:'Z',d:.413},{n:'27/64"',d:.421875},{n:'7/16"',d:.4375},
+  {n:'29/64"',d:.453125},{n:'15/32"',d:.46875},{n:'31/64"',d:.484375},
+  {n:'1/2"',d:.500},{n:'33/64"',d:.515625},{n:'17/32"',d:.53125},
+  {n:'35/64"',d:.546875},{n:'9/16"',d:.5625},{n:'37/64"',d:.578125},
+  {n:'19/32"',d:.59375},{n:'39/64"',d:.609375},{n:'5/8"',d:.625},
+  {n:'41/64"',d:.640625},{n:'21/32"',d:.65625},{n:'43/64"',d:.671875},
+  {n:'11/16"',d:.6875},{n:'45/64"',d:.703125},{n:'23/32"',d:.71875},
+  {n:'3/4"',d:.750},{n:'49/64"',d:.765625},{n:'25/32"',d:.78125},
+  {n:'51/64"',d:.796875},{n:'13/16"',d:.8125},{n:'53/64"',d:.828125},
+  {n:'27/32"',d:.84375},{n:'7/8"',d:.875},{n:'57/64"',d:.890625},
+  {n:'29/32"',d:.90625},{n:'15/16"',d:.9375},{n:'1"',d:1.000},
+  {n:'1-1/16"',d:1.0625},{n:'1-1/8"',d:1.125},{n:'1-3/16"',d:1.1875},
+  {n:'1-1/4"',d:1.250},{n:'1-5/16"',d:1.3125},{n:'1-3/8"',d:1.375},
+  {n:'1-7/16"',d:1.4375},{n:'1-1/2"',d:1.500},{n:'1-5/8"',d:1.625},
+  {n:'1-3/4"',d:1.750},{n:'1-7/8"',d:1.875},{n:'2"',d:2.000},
+  {n:'2-1/4"',d:2.250},{n:'2-1/2"',d:2.500},
 ];
-const metricDrillsMM=[
-  0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1.0,1.05,1.1,1.15,1.2,1.25,1.3,
-  1.35,1.4,1.45,1.5,1.55,1.6,1.65,1.7,1.75,1.8,1.85,1.9,1.95,2.0,2.1,2.2,2.3,
-  2.4,2.5,2.6,2.7,2.8,2.9,3.0,3.1,3.2,3.3,3.4,3.5,3.6,3.7,3.8,3.9,4.0,4.1,4.2,
-  4.3,4.4,4.5,4.6,4.7,4.8,4.9,5.0,5.1,5.2,5.3,5.4,5.5,5.6,5.7,5.8,5.9,6.0,6.1,
-  6.2,6.3,6.4,6.5,6.6,6.7,6.8,6.9,7.0,7.1,7.2,7.3,7.4,7.5,7.6,7.7,7.8,7.9,8.0,
-  8.2,8.4,8.5,8.6,8.8,9.0,9.2,9.5,9.8,10.0,10.2,10.5,10.8,11.0,11.2,11.5,11.8,
-  12.0,12.5,13.0,13.5,14.0,14.5,15.0,15.5,16.0,16.5,17.0,17.5,18.0,18.5,19.0,
-  19.5,20.0,21.0,22.0,23.0,24.0,25.0,26.0,27.0,28.0,29.0,30.0,32.0,34.0,36.0,
-  38.0,40.0,42.0,45.0,48.0
+const metMM=[
+  .5,.6,.7,.8,.9,1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2.0,2.1,2.2,2.3,
+  2.4,2.5,2.6,2.7,2.8,2.9,3.0,3.1,3.2,3.3,3.4,3.5,3.6,3.7,3.8,3.9,4.0,4.1,
+  4.2,4.3,4.4,4.5,4.6,4.7,4.8,4.9,5.0,5.2,5.4,5.5,5.6,5.8,6.0,6.2,6.4,6.5,
+  6.6,6.8,7.0,7.2,7.5,7.8,8.0,8.2,8.5,8.8,9.0,9.2,9.5,9.8,10.0,10.2,10.5,
+  10.8,11.0,11.2,11.5,11.8,12.0,12.5,13.0,13.5,14.0,14.5,15.0,15.5,16.0,
+  16.5,17.0,17.5,18.0,18.5,19.0,19.5,20.0,21.0,22.0,23.0,24.0,25.0,26.0,
+  27.0,28.0,30.0,32.0,34.0,36.0,38.0,40.0,42.0,45.0,48.0
 ];
 
-let currentTab='external', unit='mm', selectedDrillIdx=null;
+/* ── STATE ── */
+let curTab='external', unit='mm', selDi=null, activeStd=null;
 
+/* ── INIT ── */
 function onStdChange(){
   const std=document.getElementById('std').value;
-  const cls=document.getElementById('cls');
-  cls.innerHTML=(std==='unified'?uClasses:std==='metric'?mClasses:stiClasses).map((c,i)=>`<option value="${i}">${c}</option>`).join('');
-  cls.selectedIndex=0;
-  const isSti=std==='sti';
-  document.getElementById('tab-ext').textContent=isSti?'Bolt thread':'External';
-  document.getElementById('tab-int').textContent=isSti?'STI tap hole':'Internal';
-  const sel=document.getElementById('size');
-  const data=std==='unified'?uData:std==='metric'?mData:stiData;
-  sel.innerHTML=data.map((d,i)=>`<option value="${i}">${d.label}</option>`).join('');
-  sel.selectedIndex=std==='unified'?7:std==='metric'?5:5;
-  selectedDrillIdx=null;
+  const isSti=std==='sti', isAs=std==='as5202';
+  document.getElementById('cls').innerHTML=(std==='unified'?uCls:std==='metric'?mCls:isSti?sCls:aCls).map((c,i)=>`<option value="${i}">${c}</option>`).join('');
+  document.getElementById('cls').selectedIndex=0;
+  document.getElementById('tab-ext').textContent=isSti?'Bolt thread':isAs?'Port (internal)':'External';
+  document.getElementById('tab-int').textContent=isSti?'STI tap hole':isAs?'Fitting (external)':'Internal';
+  const data=std==='unified'?uData:std==='metric'?mData:isSti?stiData:asData;
+  document.getElementById('size').innerHTML=data.map((d,i)=>`<option value="${i}">${d.label}</option>`).join('');
+  document.getElementById('size').selectedIndex=std==='unified'?7:std==='metric'?4:isSti?5:5;
+  selDi=null; activeStd=null;
   document.getElementById('sti-panel').style.display=isSti?'block':'none';
+  document.getElementById('as-legend').style.display=isAs?'flex':'none';
   update();
 }
+function onSizeChange(){selDi=null;update();}
+function setTab(t,el){curTab=t;document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));el.classList.add('active');selDi=null;update();}
+function setUnit(u){unit=u;document.getElementById('btn-mm').classList.toggle('active',u==='mm');document.getElementById('btn-in').classList.toggle('active',u==='in');update();}
+function fmt(mm,dec){const d=dec!=null?dec:(unit==='mm'?3:4);return unit==='mm'?mm.toFixed(d)+' mm':(mm/25.4).toFixed(d)+'"';}
 
-function onSizeChange(){selectedDrillIdx=null;update();}
-function setTab(t,el){currentTab=t;document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));el.classList.add('active');selectedDrillIdx=null;update();}
-function setUnit(u){unit=u;document.getElementById('btn-mm').classList.toggle('active',u==='mm');document.getElementById('btn-in').classList.toggle('active',u==='inch');update();}
-function fmt(mm){return unit==='mm'?mm.toFixed(3)+' mm':(mm/25.4).toFixed(4)+'"';}
-function fmt2(mm){return unit==='mm'?mm.toFixed(2):(mm/25.4).toFixed(4);}
-
-function getParams(){
+/* ── PARAMS ── */
+function getP(){
   const std=document.getElementById('std').value;
   const idx=+document.getElementById('size').value;
   if(std==='sti'){
-    const d=stiData[idx];
-    const isTap=currentTab==='internal';
-    const bMM=d.boltMajorIn*25.4, bPMM=(1/d.boltTpi)*25.4;
-    const sMM=d.stiMajorIn*25.4, sPMM=(1/d.stiTpi)*25.4;
-    const sDrillMM=d.stiDrillIn*25.4;
-    if(isTap){
-      const minorMM=sMM-1.0825*sPMM, pitchDiaMM=sMM-0.6495*sPMM;
-      return{majorMM:sMM,minorMM,pitchDiaMM,pitchMM:sPMM,label:d.label,tpi:d.stiTpi,std:'sti',isSti:true,isTapView:true,stiDrillMM:sDrillMM,stiDrillName:d.stiDrillName,d};
-    } else {
-      const minorMM=bMM-1.2268*bPMM, pitchDiaMM=bMM-0.6495*bPMM;
-      return{majorMM:bMM,minorMM,pitchDiaMM,pitchMM:bPMM,label:d.label,tpi:d.boltTpi,std:'sti',isSti:true,isTapView:false,stiMajorMM:sMM,stiDrillMM:sDrillMM,stiDrillName:d.stiDrillName,d};
-    }
+    const d=stiData[idx]; const isTap=curTab==='internal';
+    const bMM=d.bMaj*25.4, bPMM=(1/d.bTpi)*25.4, sMM=d.sMaj*25.4, sPMM=(1/d.sTpi)*25.4;
+    if(isTap){const mn=sMM-1.0825*sPMM,pd=sMM-0.6495*sPMM;return{mMM:sMM,mnMM:mn,pdMM:pd,pMM:sPMM,label:d.label,tpi:d.sTpi,std:'sti',isSti:true,isTap:true,sDrillMM:d.sDrill*25.4,sDrillN:d.sDrillN,d};}
+    else{const mn=bMM-1.2268*bPMM,pd=bMM-0.6495*bPMM;return{mMM:bMM,mnMM:mn,pdMM:pd,pMM:bPMM,label:d.label,tpi:d.bTpi,std:'sti',isSti:true,isTap:false,sMM,sDrillMM:d.sDrill*25.4,sDrillN:d.sDrillN,d};}
   }
-  let majorMM,pitchMM,label,tpi;
-  if(std==='unified'){const d=uData[idx];pitchMM=(1/d.tpi)*25.4;majorMM=d.major*25.4;label=d.label;tpi=d.tpi;}
-  else{const d=mData[idx];pitchMM=d.p;majorMM=d.d;label=d.label;tpi=+(25.4/d.p).toFixed(1);}
-  const minorExtMM=majorMM-1.2268*pitchMM, minorIntMM=majorMM-1.0825*pitchMM;
-  const pitchDiaMM=majorMM-0.6495*pitchMM;
-  const minorMM=currentTab==='external'?minorExtMM:minorIntMM;
-  return{majorMM,minorMM,pitchDiaMM,pitchMM,label,tpi,std,isSti:false};
+  if(std==='as5202'){
+    const d=asData[idx], pMM=(1/d.tpi)*25.4, mMM=d.maj*25.4;
+    const mnI=mMM-1.0825*pMM, mnE=mMM-1.2268*pMM, pd=mMM-0.6495*pMM;
+    const mnMM=curTab==='external'?mnE:mnI;
+    return{mMM,mnMM,pdMM:pd,pMM,label:d.label,tpi:d.tpi,std:'as5202',isAs:true,d,
+      sfMM:d.sfIn*25.4,cbMM:d.cbIn*25.4,engMM:d.engIn*25.4};
+  }
+  let mMM,pMM,label,tpi;
+  if(std==='unified'){const d=uData[idx];pMM=(1/d.tpi)*25.4;mMM=d.major*25.4;label=d.label;tpi=d.tpi;}
+  else{const d=mData[idx];pMM=d.p;mMM=d.d;label=d.label;tpi=+(25.4/d.p).toFixed(1);}
+  const mnE=mMM-1.2268*pMM, mnI=mMM-1.0825*pMM, pd=mMM-0.6495*pMM;
+  return{mMM,mnMM:curTab==='external'?mnE:mnI,pdMM:pd,pMM,label,tpi,std,isSti:false};
 }
 
+/* ── DRILLS ── */
 function getDrills(p){
   if(p.isSti){
-    const d=p.d, sMM=d.stiMajorIn*25.4, sPMM=(1/d.stiTpi)*25.4, sDrillMM=d.stiDrillIn*25.4;
-    const sMinorMM=sMM-1.0825*sPMM;
-    if(p.isTapView){
-      const pct=Math.round((1-(sMM-sDrillMM)/(sMM-sMinorMM))*100);
-      return [{name:d.stiDrillName+' (STI tap)',dMM:sDrillMM,dIn:d.stiDrillIn,pct,rec:true,isStiDrill:true}];
-    }
-    const major=p.majorMM, minor=p.minorMM;
-    const cands=drillsIn.filter(dr=>{const pct=(1-(major/25.4-dr.d)/(major/25.4-minor/25.4))*100;return dr.d>=minor/25.4*0.88&&dr.d<=major/25.4*0.998&&pct>=45&&pct<=100;});
-    const sorted=cands.sort((a,b)=>Math.abs(a.d-minor/25.4)-Math.abs(b.d-minor/25.4)).slice(0,6);
-    const minD=Math.min(...sorted.map(dr=>Math.abs(dr.d-minor/25.4)));
-    return sorted.map(dr=>({name:dr.name,dMM:dr.d*25.4,dIn:dr.d,pct:Math.round((1-(major/25.4-dr.d)/(major/25.4-minor/25.4))*100),rec:Math.abs(dr.d-minor/25.4)===minD,isStiDrill:false}));
+    const d=p.d,sMM=d.sMaj*25.4,sPMM=(1/d.sTpi)*25.4,sd=d.sDrill*25.4,smn=sMM-1.0825*sPMM;
+    if(p.isTap){const pct=Math.round((1-(sMM-sd)/(sMM-smn))*100);return[{n:d.sDrillN+' (STI tap)',dMM:sd,dIn:d.sDrill,pct,rec:true,isSti:true}];}
+    const mj=p.mMM,mn=p.mnMM;
+    const c=drillsIn.filter(dr=>{const pct=(1-(mj/25.4-dr.d)/(mj/25.4-mn/25.4))*100;return dr.d>=mn/25.4*.88&&dr.d<=mj/25.4*.998&&pct>=45&&pct<=100;});
+    const s=c.sort((a,b)=>Math.abs(a.d-mn/25.4)-Math.abs(b.d-mn/25.4)).slice(0,6);
+    const md=Math.min(...s.map(dr=>Math.abs(dr.d-mn/25.4)));
+    return s.map(dr=>({n:dr.n,dMM:dr.d*25.4,dIn:dr.d,pct:Math.round((1-(mj/25.4-dr.d)/(mj/25.4-mn/25.4))*100),rec:Math.abs(dr.d-mn/25.4)===md}));
   }
-  const major=p.majorMM, minor=p.minorMM;
+  const mj=p.mMM,mn=p.mnMM;
   if(p.std==='metric'){
-    const cands=metricDrillsMM.filter(d=>{const pct=(1-(major-d)/(major-minor))*100;return d>=minor*0.88&&d<=major*0.998&&pct>=45&&pct<=100;});
-    const sorted=cands.sort((a,b)=>Math.abs(a-minor)-Math.abs(b-minor)).slice(0,7);
-    const recD=sorted.reduce((best,d)=>Math.abs(d-minor)<Math.abs(best-minor)?d:best,sorted[0]);
-    return sorted.map(d=>({name:d.toFixed(1)+'mm',dMM:d,dIn:d/25.4,pct:Math.round((1-(major-d)/(major-minor))*100),rec:d===recD}));
+    const c=metMM.filter(d=>{const pct=(1-(mj-d)/(mj-mn))*100;return d>=mn*.88&&d<=mj*.998&&pct>=45&&pct<=100;});
+    const s=c.sort((a,b)=>Math.abs(a-mn)-Math.abs(b-mn)).slice(0,7);
+    const r=s.length?s.reduce((b,d)=>Math.abs(d-mn)<Math.abs(b-mn)?d:b,s[0]):null;
+    return s.map(d=>({n:d.toFixed(1)+'mm',dMM:d,dIn:d/25.4,pct:Math.round((1-(mj-d)/(mj-mn))*100),rec:d===r}));
   }
-  const cands=drillsIn.filter(d=>{const pct=(1-(major/25.4-d.d)/(major/25.4-minor/25.4))*100;return d.d>=minor/25.4*0.88&&d.d<=major/25.4*0.998&&pct>=45&&pct<=100;});
-  const sorted=cands.sort((a,b)=>Math.abs(a.d-minor/25.4)-Math.abs(b.d-minor/25.4)).slice(0,7);
-  const minD=Math.min(...sorted.map(d=>Math.abs(d.d-minor/25.4)));
-  return sorted.map(d=>({name:d.name,dMM:d.d*25.4,dIn:d.d,pct:Math.round((1-(major/25.4-d.d)/(major/25.4-minor/25.4))*100),rec:Math.abs(d.d-minor/25.4)===minD}));
+  const c=drillsIn.filter(d=>{const pct=(1-(mj/25.4-d.d)/(mj/25.4-mn/25.4))*100;return d.d>=mn/25.4*.88&&d.d<=mj/25.4*.998&&pct>=45&&pct<=100;});
+  const s=c.sort((a,b)=>Math.abs(a.d-mn/25.4)-Math.abs(b.d-mn/25.4)).slice(0,7);
+  const md=Math.min(...s.map(d=>Math.abs(d.d-mn/25.4)));
+  return s.map(d=>({n:d.n,dMM:d.d*25.4,dIn:d.d,pct:Math.round((1-(mj/25.4-d.d)/(mj/25.4-mn/25.4))*100),rec:Math.abs(d.d-mn/25.4)===md}));
 }
 
-function drawDiagram(p, drillMM){
+/* ── BADGES + STD CARD ── */
+function renderBadges(std){
+  const maps=stdMap[std]||[];
+  const row=document.getElementById('badges-row');
+  row.innerHTML='<span class="badges-label">Standards:</span>';
+  if(!maps.length){row.innerHTML+='<span class="std-badge b-none">No standard mapped</span>';return;}
+  maps.forEach(s=>{
+    const btn=document.createElement('button');
+    btn.className=`std-badge ${s.cls}`;
+    btn.textContent=s.label;
+    if(activeStd===s.id){btn.style.outline='2px solid currentColor';btn.style.outlineOffset='2px';}
+    btn.onclick=()=>{activeStd=activeStd===s.id?null:s.id;renderBadges(std);renderStdCard(std);};
+    row.appendChild(btn);
+  });
+}
+function renderStdCard(std){
+  const maps=stdMap[std]||[];
+  const card=document.getElementById('std-card');
+  if(!activeStd){card.style.display='none';return;}
+  const s=maps.find(m=>m.id===activeStd);
+  if(!s){card.style.display='none';return;}
+  card.style.display='block';
+  card.style.borderLeftColor=bColors[s.cls]||'var(--border)';
+  card.innerHTML=`
+    <div class="sc-head">
+      <span class="std-badge ${s.cls}" style="pointer-events:none">${s.label}</span>
+      <span class="sc-title">${s.title}</span>
+    </div>
+    <p class="sc-desc">${s.desc}</p>
+    <div class="sc-div"></div>
+    <div class="sc-fields">${s.fields.map(f=>`<div class="sc-field">${f.k}: <span>${f.v}</span></div>`).join('')}</div>
+    <div class="sc-div"></div>
+    <p class="sc-note">${s.note}</p>`;
+}
+
+/* ── AS5202 DIAGRAM ── */
+function drawAs5202(p, isPort){
   const svg=document.getElementById('vsvg');
-  const W=200,H=310,cx=100,topY=28,bottomY=245,bodyH=217,nCycles=5;
-  const majorR=50, minorR=majorR*(p.minorMM/p.majorMM);
-  const pitchR=majorR*(p.pitchDiaMM/p.majorMM);
-  const pitchPx=bodyH/nCycles, crestW=pitchPx*0.25;
-  const isStiTap=p.isSti&&p.isTapView, isExt=currentTab==='external';
+  const mg=document.getElementById('main-grid');
+  mg.classList.add('as-layout');
+  const W=640, H=420;
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  const cx=280;
+  const sfTop=52, sfBot=sfTop+26;
+  const maxR=Math.min(115,(cx-110)/(p.d.sfIn/2));
+  const scale=maxR/(p.d.sfIn/2);
+  const majR=(p.d.maj/2)*scale;
+  const pitchMM=25.4/p.d.tpi;
+  const minorDiff=1.0825*(pitchMM/25.4);
+  const minR=(p.d.maj/2-minorDiff)*scale;
+  const sfR=(p.d.sfIn/2)*scale;
+  const cbR=(p.d.cbIn/2)*scale;
+  const pPx=(1/p.d.tpi)*scale;
+  const orCS=Math.max(4,(p.d.oring.cs/2)*scale);
+  const orR=(p.d.oring.od/2)*scale;
+  const engD=Math.max(pPx*3,p.d.engIn*scale);
+  const tBot=sfBot+engD;
+  const chamH=Math.max(10,pPx*1.8);
+  const chamRun=chamH/Math.tan((90-p.d.chamDeg)*Math.PI/180);
+  const cbDepth=10;
+  const bBot=tBot+pPx*2.5;
+  const tC='#185FA5',sfC='#0F6E56',sfF='#E1F5EE',chC='#BA7517',chF='#FAEEDA';
+  const orC='#E24B4A',cbC='#534AB7',cbF='#EEEDFE',bC='#5F5E5A',bF='#D3D1C7';
+  const dimC='#378ADD',gray='#888780',dark='#2C2C2A';
+  const BL=[[cx-sfR,sfTop],[cx-sfR,sfBot],[cx-cbR,sfBot],[cx-cbR,sfBot+cbDepth],
+    [cx-majR-chamRun,sfBot+cbDepth],[cx-majR,sfBot+cbDepth+chamH],[cx-majR,tBot],
+    [cx-majR*.97,tBot+pPx*1.2],[cx-minR*.9,bBot],[cx,bBot]];
+  const BR=BL.map(([x,y])=>[cx*2-x,y]);
+  const bodyPath=`M ${BL.map(([x,y])=>`${x.toFixed(1)} ${y.toFixed(1)}`).join(' L ')} L ${BR.slice().reverse().map(([x,y])=>`${x.toFixed(1)} ${y.toFixed(1)}`).join(' L ')} Z`;
+  const bodyPoly=[...BL,...BR.slice().reverse()].map(([x,y])=>`${x.toFixed(1)},${y.toFixed(1)}`).join(' ');
+  const hatch=[];
+  for(let o=-200;o<200;o+=9){
+    hatch.push(`<line x1="0" y1="${sfTop+o}" x2="${cx}" y2="${sfTop+o+cx*0.55}" stroke="${bC}" stroke-width="0.6" opacity="0.14" clip-path="url(#bclip)"/>`);
+    hatch.push(`<line x1="${cx}" y1="${sfTop+o}" x2="${W}" y2="${sfTop+o+cx*0.55}" stroke="${bC}" stroke-width="0.6" opacity="0.14" clip-path="url(#bclip)"/>`);
+  }
+  function tPath(sign){
+    const wx=cx+sign*minR,ox=cx+sign*majR,n=Math.max(3,Math.floor(engD/pPx));
+    let d=`M${wx.toFixed(1)},${sfBot}`;
+    for(let i=0;i<n;i++){const y0=sfBot+i*pPx,cw=pPx*.25;d+=` L${wx.toFixed(1)},${(y0+cw).toFixed(1)} L${ox.toFixed(1)},${(y0+pPx-cw).toFixed(1)} L${ox.toFixed(1)},${(y0+pPx).toFixed(1)}`;}
+    return d+` L${wx.toFixed(1)},${tBot.toFixed(1)}`;
+  }
+  const orY=sfBot-orCS-4, orCX=cx+(orR-orCS);
+  const lDimX=cx-sfR-32, rLabelX=cx+sfR+22;
+  const sfDimY=sfTop-16, cbDimY=sfBot+cbDepth+18, majDimY=tBot+pPx*.7;
+  svg.innerHTML=`
+  <defs>
+    <marker id="va" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <clipPath id="bclip"><polygon points="${bodyPoly}"/></clipPath>
+  </defs>
+  <path d="${bodyPath}" fill="${bF}" opacity="0.5"/>
+  ${hatch.join('')}
+  <path d="${bodyPath}" fill="none" stroke="${bC}" stroke-width="1.5"/>
+  <line x1="${cx}" y1="${sfTop-20}" x2="${cx}" y2="${bBot+12}" stroke="${dark}" stroke-width="0.75" stroke-dasharray="10 5" opacity="0.4"/>
+  <line x1="${cx}" y1="${sfTop-20}" x2="${cx}" y2="${sfTop-12}" stroke="${dark}" stroke-width="1.8" opacity="0.55"/>
+  <line x1="${cx}" y1="${bBot+8}" x2="${cx}" y2="${bBot+14}" stroke="${dark}" stroke-width="1.8" opacity="0.55"/>
+  <rect x="${cx-sfR}" y="${sfTop}" width="${sfR*2}" height="${sfBot-sfTop}" fill="${sfF}" opacity="0.8"/>
+  <line x1="${cx-sfR}" y1="${sfBot}" x2="${cx+sfR}" y2="${sfBot}" stroke="${sfC}" stroke-width="2.5"/>
+  <line x1="${cx-sfR}" y1="${sfTop}" x2="${cx-sfR}" y2="${sfBot}" stroke="${sfC}" stroke-width="1"/>
+  <line x1="${cx+sfR}" y1="${sfTop}" x2="${cx+sfR}" y2="${sfBot}" stroke="${sfC}" stroke-width="1"/>
+  <rect x="${cx-cbR}" y="${sfBot}" width="${(cbR-majR-chamRun).toFixed(1)}" height="${cbDepth}" fill="${cbF}" opacity="0.65"/>
+  <rect x="${(cx+majR+chamRun).toFixed(1)}" y="${sfBot}" width="${(cbR-majR-chamRun).toFixed(1)}" height="${cbDepth}" fill="${cbF}" opacity="0.65"/>
+  <line x1="${cx-cbR}" y1="${sfBot}" x2="${(cx-majR-chamRun).toFixed(1)}" y2="${sfBot}" stroke="${cbC}" stroke-width="1.8"/>
+  <line x1="${(cx+majR+chamRun).toFixed(1)}" y1="${sfBot}" x2="${cx+cbR}" y2="${sfBot}" stroke="${cbC}" stroke-width="1.8"/>
+  <line x1="${cx-cbR}" y1="${sfBot}" x2="${cx-cbR}" y2="${sfBot+cbDepth}" stroke="${cbC}" stroke-width="1.4"/>
+  <line x1="${cx+cbR}" y1="${sfBot}" x2="${cx+cbR}" y2="${sfBot+cbDepth}" stroke="${cbC}" stroke-width="1.4"/>
+  <polygon points="${(cx-majR-chamRun).toFixed(1)},${sfBot+cbDepth} ${(cx-majR).toFixed(1)},${(sfBot+cbDepth+chamH).toFixed(1)} ${(cx-majR).toFixed(1)},${sfBot+cbDepth}" fill="${chF}" opacity="0.95"/>
+  <polygon points="${(cx+majR+chamRun).toFixed(1)},${sfBot+cbDepth} ${(cx+majR).toFixed(1)},${(sfBot+cbDepth+chamH).toFixed(1)} ${(cx+majR).toFixed(1)},${sfBot+cbDepth}" fill="${chF}" opacity="0.95"/>
+  <line x1="${(cx-majR-chamRun).toFixed(1)}" y1="${sfBot+cbDepth}" x2="${(cx-majR).toFixed(1)}" y2="${(sfBot+cbDepth+chamH).toFixed(1)}" stroke="${chC}" stroke-width="2"/>
+  <line x1="${(cx+majR+chamRun).toFixed(1)}" y1="${sfBot+cbDepth}" x2="${(cx+majR).toFixed(1)}" y2="${(sfBot+cbDepth+chamH).toFixed(1)}" stroke="${chC}" stroke-width="2"/>
+  <path d="${tPath(-1)}" fill="none" stroke="${tC}" stroke-width="1.6"/>
+  <path d="${tPath(1)}" fill="none" stroke="${tC}" stroke-width="1.6"/>
+  <circle cx="${(cx-orCX).toFixed(1)}" cy="${orY.toFixed(1)}" r="${orCS.toFixed(1)}" fill="${orC}" opacity="0.85"/>
+  <circle cx="${orCX.toFixed(1)}" cy="${orY.toFixed(1)}" r="${orCS.toFixed(1)}" fill="${orC}" opacity="0.85"/>
+  <line x1="${cx-sfR}" y1="${sfDimY}" x2="${cx+sfR}" y2="${sfDimY}" stroke="${sfC}" stroke-width="1" marker-end="url(#va)" marker-start="url(#va)"/>
+  <line x1="${cx-sfR}" y1="${sfTop}" x2="${cx-sfR}" y2="${sfDimY-3}" stroke="${sfC}" stroke-width="0.6" opacity="0.7"/>
+  <line x1="${cx+sfR}" y1="${sfTop}" x2="${cx+sfR}" y2="${sfDimY-3}" stroke="${sfC}" stroke-width="0.6" opacity="0.7"/>
+  <text x="${cx}" y="${sfDimY-5}" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="12" fill="${sfC}" font-weight="600">Spotface ⌀  ${fmt(p.d.sfIn*25.4,3)}</text>
+  <line x1="${cx-cbR}" y1="${cbDimY}" x2="${cx+cbR}" y2="${cbDimY}" stroke="${cbC}" stroke-width="1" marker-end="url(#va)" marker-start="url(#va)"/>
+  <line x1="${cx-cbR}" y1="${sfBot+cbDepth}" x2="${cx-cbR}" y2="${cbDimY+3}" stroke="${cbC}" stroke-width="0.6" opacity="0.7"/>
+  <line x1="${cx+cbR}" y1="${sfBot+cbDepth}" x2="${cx+cbR}" y2="${cbDimY+3}" stroke="${cbC}" stroke-width="0.6" opacity="0.7"/>
+  <text x="${cx}" y="${cbDimY+14}" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="12" fill="${cbC}" font-weight="600">Counterbore ⌀  ${fmt(p.d.cbIn*25.4,3)}</text>
+  <line x1="${cx-majR}" y1="${majDimY}" x2="${cx+majR}" y2="${majDimY}" stroke="${tC}" stroke-width="1" marker-end="url(#va)" marker-start="url(#va)"/>
+  <text x="${cx}" y="${majDimY+14}" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="12" fill="${tC}" font-weight="600">Thread major ⌀  ${fmt(p.d.maj*25.4,3)}</text>
+  <line x1="${cx-sfR-6}" y1="${sfBot}" x2="${lDimX+6}" y2="${sfBot}" stroke="${tC}" stroke-width="0.6" opacity="0.6"/>
+  <line x1="${cx-sfR-6}" y1="${tBot}" x2="${lDimX+6}" y2="${tBot}" stroke="${tC}" stroke-width="0.6" opacity="0.6"/>
+  <line x1="${lDimX+10}" y1="${sfBot}" x2="${lDimX+10}" y2="${tBot}" stroke="${tC}" stroke-width="1" marker-end="url(#va)" marker-start="url(#va)"/>
+  <text x="${lDimX+5}" y="${(sfBot+tBot)/2-8}" text-anchor="end" font-family="-apple-system,sans-serif" font-size="11" fill="${tC}" font-weight="600">Min eng.</text>
+  <text x="${lDimX+5}" y="${(sfBot+tBot)/2+6}" text-anchor="end" font-family="-apple-system,sans-serif" font-size="11" fill="${tC}">${fmt(p.d.engIn*25.4,3)}</text>
+  <line x1="${cx+sfR+6}" y1="${sfTop}" x2="${rLabelX+4}" y2="${sfTop}" stroke="${sfC}" stroke-width="0.6" opacity="0.5"/>
+  <line x1="${cx+sfR+6}" y1="${sfBot}" x2="${rLabelX+4}" y2="${sfBot}" stroke="${sfC}" stroke-width="0.6" opacity="0.5"/>
+  <line x1="${rLabelX+8}" y1="${sfTop}" x2="${rLabelX+8}" y2="${sfBot}" stroke="${sfC}" stroke-width="1" marker-end="url(#va)" marker-start="url(#va)"/>
+  <text x="${rLabelX+14}" y="${(sfTop+sfBot)/2+4}" text-anchor="start" font-family="-apple-system,sans-serif" font-size="11" fill="${sfC}">SF depth  · 63 µin Ra max</text>
+  <line x1="${(cx+majR+chamRun+4).toFixed(1)}" y1="${(sfBot+cbDepth+chamH/2).toFixed(1)}" x2="${rLabelX+28}" y2="${(sfBot+cbDepth+chamH/2+16).toFixed(1)}" stroke="${chC}" stroke-width="0.7" stroke-dasharray="4 3" opacity="0.8"/>
+  <text x="${rLabelX+30}" y="${(sfBot+cbDepth+chamH/2+14).toFixed(1)}" text-anchor="start" font-family="-apple-system,sans-serif" font-size="12" fill="${chC}" font-weight="600">${p.d.chamDeg}° chamfer lead-in</text>
+  <text x="${rLabelX+30}" y="${(sfBot+cbDepth+chamH/2+28).toFixed(1)}" text-anchor="start" font-family="-apple-system,sans-serif" font-size="10.5" fill="${chC}">× 1 thread pitch minimum</text>
+  <line x1="${(cx+majR+5).toFixed(1)}" y1="${(sfBot+cbDepth+chamH+pPx).toFixed(1)}" x2="${(cx+majR+22).toFixed(1)}" y2="${(sfBot+cbDepth+chamH+pPx).toFixed(1)}" stroke="${gray}" stroke-width="0.6" opacity="0.6"/>
+  <line x1="${(cx+majR+5).toFixed(1)}" y1="${(sfBot+cbDepth+chamH+pPx*2).toFixed(1)}" x2="${(cx+majR+22).toFixed(1)}" y2="${(sfBot+cbDepth+chamH+pPx*2).toFixed(1)}" stroke="${gray}" stroke-width="0.6" opacity="0.6"/>
+  <line x1="${(cx+majR+16).toFixed(1)}" y1="${(sfBot+cbDepth+chamH+pPx).toFixed(1)}" x2="${(cx+majR+16).toFixed(1)}" y2="${(sfBot+cbDepth+chamH+pPx*2).toFixed(1)}" stroke="${gray}" stroke-width="1" marker-end="url(#va)" marker-start="url(#va)"/>
+  <text x="${(cx+majR+22).toFixed(1)}" y="${(sfBot+cbDepth+chamH+pPx*1.45).toFixed(1)}" text-anchor="start" font-family="-apple-system,sans-serif" font-size="11" fill="${gray}" font-weight="500">Pitch  ${fmt(pitchMM,3)}</text>
+  <text x="${(cx+majR+22).toFixed(1)}" y="${(sfBot+cbDepth+chamH+pPx*1.45+13).toFixed(1)}" text-anchor="start" font-family="-apple-system,sans-serif" font-size="10.5" fill="${gray}">${p.d.tpi} TPI · Class 2${isPort?'B':'A'}</text>
+  <line x1="${(orCX+orCS+3).toFixed(1)}" y1="${orY.toFixed(1)}" x2="${(orCX+orCS+36).toFixed(1)}" y2="${(orY-24).toFixed(1)}" stroke="${orC}" stroke-width="0.7" stroke-dasharray="4 3" opacity="0.85"/>
+  <text x="${(orCX+orCS+38).toFixed(1)}" y="${(orY-26).toFixed(1)}" text-anchor="start" font-family="-apple-system,sans-serif" font-size="12" fill="${orC}" font-weight="600">O-ring (AS568)</text>
+  <text x="${(orCX+orCS+38).toFixed(1)}" y="${(orY-12).toFixed(1)}" text-anchor="start" font-family="-apple-system,sans-serif" font-size="10.5" fill="${orC}">CS: ${fmt(p.d.oring.cs*25.4,3)}  OD: ${fmt(p.d.oring.od*25.4,3)}</text>
+  <text x="${cx}" y="${H-18}" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" fill="${bC}" font-weight="600">AS5202 Dash -${p.d.dash} · ${isPort?'Port body (internal thread)':'Fitting boss (external thread)'}</text>
+  <text x="${cx}" y="${H-4}" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="10.5" fill="${gray}">Seal: O-ring compressed against spotface · AS5202 / MS33649 · Max 3000 psi</text>`;
+}
+
+/* ── STANDARD THREAD DIAGRAM ── */
+function drawThread(p, drillMM){
+  document.getElementById("main-grid").classList.remove("as-layout");
+  const svg=document.getElementById('vsvg');
+  svg.setAttribute('viewBox','0 0 200 310');
+  const W=200,H=310,cx=100,tY=28,bY=245,bH=217,nC=5;
+  const mR=50, mnR=mR*(p.mnMM/p.mMM), pR=mR*(p.pdMM/p.mMM);
+  const pPx=bH/nC, cW=pPx*.25;
+  const isExt=curTab==='external', isStiTap=p.isSti&&p.isTap;
   const mc=isStiTap?'#854F0B':isExt?'#185FA5':'#0F6E56';
   const fc=isStiTap?'#FAEEDA':isExt?'#E6F1FB':'#E1F5EE';
-  const dimC='#378ADD', corC='#993C1D', engC='#E24B4A', ambC='#BA7517', grayC='#888780';
+  const dimC='#378ADD',corC='#993C1D',engC='#E24B4A',ambC='#BA7517',gC='#888780';
 
-  function buildPath(sign){
-    let d=`M${cx+sign*minorR},${topY}`;
-    for(let i=0;i<nCycles;i++){
-      const y0=topY+i*pitchPx;
-      d+=` L${(cx+sign*minorR).toFixed(1)},${(y0+crestW).toFixed(1)} L${(cx+sign*majorR).toFixed(1)},${(y0+pitchPx-crestW).toFixed(1)} L${(cx+sign*majorR).toFixed(1)},${(y0+pitchPx).toFixed(1)}`;
-    }
-    return d+` L${cx+sign*minorR},${bottomY}`;
+  function bPath(sign){
+    let d=`M${cx+sign*mnR},${tY}`;
+    for(let i=0;i<nC;i++){const y0=tY+i*pPx;d+=` L${(cx+sign*mnR).toFixed(1)},${(y0+cW).toFixed(1)} L${(cx+sign*mR).toFixed(1)},${(y0+pPx-cW).toFixed(1)} L${(cx+sign*mR).toFixed(1)},${(y0+pPx).toFixed(1)}`;}
+    return d+` L${cx+sign*mnR},${bY}`;
   }
-  const lP=buildPath(-1), rP=buildPath(1);
+  const lP=bPath(-1), rP=bPath(1);
   const hatch=[];
   for(let o=-160;o<160;o+=7){
-    hatch.push(`<line x1="${cx-majorR}" y1="${topY+o}" x2="${cx}" y2="${topY+o+majorR*.9}" stroke="${mc}" stroke-width="0.5" opacity="0.14"/>`);
-    hatch.push(`<line x1="${cx}" y1="${topY+o}" x2="${cx+majorR}" y2="${topY+o+majorR*.9}" stroke="${mc}" stroke-width="0.5" opacity="0.14"/>`);
+    hatch.push(`<line x1="${cx-mR}" y1="${tY+o}" x2="${cx}" y2="${tY+o+mR*.9}" stroke="${mc}" stroke-width="0.5" opacity="0.14"/>`);
+    hatch.push(`<line x1="${cx}" y1="${tY+o}" x2="${cx+mR}" y2="${tY+o+mR*.9}" stroke="${mc}" stroke-width="0.5" opacity="0.14"/>`);
   }
 
-  let drillOv='', stiOv='';
+  let dOv='', sOv='';
   if(drillMM!=null){
-    const dr=Math.max(0,Math.min(majorR*(drillMM/p.majorMM),majorR));
-    const dc=p.isSti&&p.isTapView?ambC:engC;
-    drillOv=`<rect x="${cx-dr}" y="${topY}" width="${dr*2}" height="${bodyH}" fill="${dc}" opacity="0.11"/>
-    <line x1="${cx-dr}" y1="${topY-4}" x2="${cx-dr}" y2="${bottomY+4}" stroke="${dc}" stroke-width="1" stroke-dasharray="4 3" opacity="0.75"/>
-    <line x1="${cx+dr}" y1="${topY-4}" x2="${cx+dr}" y2="${bottomY+4}" stroke="${dc}" stroke-width="1" stroke-dasharray="4 3" opacity="0.75"/>
-    <line x1="${cx-dr}" y1="${bottomY+16}" x2="${cx+dr}" y2="${bottomY+16}" stroke="${dc}" stroke-width="0.75" marker-end="url(#va)" marker-start="url(#va)"/>
-    <line x1="${cx-dr}" y1="${bottomY+7}" x2="${cx-dr}" y2="${bottomY+20}" stroke="${dc}" stroke-width="0.5" opacity="0.6"/>
-    <line x1="${cx+dr}" y1="${bottomY+7}" x2="${cx+dr}" y2="${bottomY+20}" stroke="${dc}" stroke-width="0.5" opacity="0.6"/>
-    <text x="${cx}" y="${bottomY+28}" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="8.5" fill="${dc}" font-weight="500">${p.isSti&&p.isTapView?'STI tap: ':'Drill: '}${fmt(drillMM)}</text>`;
+    const dr=Math.max(0,Math.min(mR*(drillMM/p.mMM),mR));
+    const dc=p.isSti&&p.isTap?ambC:engC;
+    dOv=`<rect x="${cx-dr}" y="${tY}" width="${dr*2}" height="${bH}" fill="${dc}" opacity="0.11"/>
+    <line x1="${cx-dr}" y1="${tY-4}" x2="${cx-dr}" y2="${bY+4}" stroke="${dc}" stroke-width="1" stroke-dasharray="4 3" opacity="0.75"/>
+    <line x1="${cx+dr}" y1="${tY-4}" x2="${cx+dr}" y2="${bY+4}" stroke="${dc}" stroke-width="1" stroke-dasharray="4 3" opacity="0.75"/>
+    <line x1="${cx-dr}" y1="${bY+16}" x2="${cx+dr}" y2="${bY+16}" stroke="${dc}" stroke-width="0.75" marker-end="url(#va)" marker-start="url(#va)"/>
+    <line x1="${cx-dr}" y1="${bY+7}" x2="${cx-dr}" y2="${bY+20}" stroke="${dc}" stroke-width="0.5" opacity="0.6"/>
+    <line x1="${cx+dr}" y1="${bY+7}" x2="${cx+dr}" y2="${bY+20}" stroke="${dc}" stroke-width="0.5" opacity="0.6"/>
+    <text x="${cx}" y="${bY+28}" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="8.5" fill="${dc}" font-weight="500">${p.isSti&&p.isTap?'STI tap: ':'Drill: '}${fmt(drillMM)}</text>`;
   }
-  if(p.isSti&&!p.isTapView&&p.stiMajorMM){
-    const ir=Math.min(majorR*(p.stiMajorMM/p.majorMM),majorR*1.4);
-    stiOv=`<rect x="${cx-ir}" y="${topY+4}" width="${ir*2}" height="${bodyH-8}" fill="${ambC}" opacity="0.07" rx="2"/>
-    <line x1="${cx-ir}" y1="${topY+4}" x2="${cx-ir}" y2="${bottomY-4}" stroke="${ambC}" stroke-width="0.75" stroke-dasharray="3 2" opacity="0.45"/>
-    <line x1="${cx+ir}" y1="${topY+4}" x2="${cx+ir}" y2="${bottomY-4}" stroke="${ambC}" stroke-width="0.75" stroke-dasharray="3 2" opacity="0.45"/>
-    <text x="${cx+ir+3}" y="${topY+16}" text-anchor="start" font-family="-apple-system,sans-serif" font-size="7" fill="${ambC}" font-weight="500">Insert OD</text>`;
+  if(p.isSti&&!p.isTap&&p.sMM){
+    const ir=Math.min(mR*(p.sMM/p.mMM),mR*1.35);
+    sOv=`<rect x="${cx-ir}" y="${tY+4}" width="${ir*2}" height="${bH-8}" fill="${ambC}" opacity="0.07" rx="2"/>
+    <line x1="${cx-ir}" y1="${tY+4}" x2="${cx-ir}" y2="${bY-4}" stroke="${ambC}" stroke-width="0.75" stroke-dasharray="3 2" opacity="0.45"/>
+    <line x1="${cx+ir}" y1="${tY+4}" x2="${cx+ir}" y2="${bY-4}" stroke="${ambC}" stroke-width="0.75" stroke-dasharray="3 2" opacity="0.45"/>
+    <text x="${cx+ir+3}" y="${tY+16}" text-anchor="start" font-family="-apple-system,sans-serif" font-size="7" fill="${ambC}" font-weight="500">Insert OD</text>`;
   }
 
-  const td=p.majorMM-p.minorMM;
-  const typeLabel=p.isSti?(p.isTapView?'STI tap hole':'Bolt thread'):(isExt?'external':'internal');
+  const td=p.mMM-p.mnMM;
+  const lbl=p.isSti?(p.isTap?'STI tap hole':'Bolt thread'):(curTab==='external'?'external':'internal');
 
   svg.innerHTML=`
   <defs>
     <marker id="va" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
       <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
     </marker>
-    <clipPath id="lc"><path d="${lP} L${cx},${bottomY} L${cx},${topY} Z"/></clipPath>
-    <clipPath id="rc"><path d="${rP} L${cx},${bottomY} L${cx},${topY} Z"/></clipPath>
+    <clipPath id="lc"><path d="${lP} L${cx},${bY} L${cx},${tY} Z"/></clipPath>
+    <clipPath id="rc"><path d="${rP} L${cx},${bY} L${cx},${tY} Z"/></clipPath>
   </defs>
-  <path d="${lP} L${cx},${bottomY} L${cx},${topY} Z" fill="${fc}" opacity="0.65"/>
-  <path d="${rP} L${cx},${bottomY} L${cx},${topY} Z" fill="${fc}" opacity="0.65"/>
+  <path d="${lP} L${cx},${bY} L${cx},${tY} Z" fill="${fc}" opacity="0.65"/>
+  <path d="${rP} L${cx},${bY} L${cx},${tY} Z" fill="${fc}" opacity="0.65"/>
   <g clip-path="url(#lc)">${hatch.join('')}</g>
   <g clip-path="url(#rc)">${hatch.join('')}</g>
-  ${stiOv}${drillOv}
+  ${sOv}${dOv}
   <path d="${lP}" fill="none" stroke="${mc}" stroke-width="1.2"/>
   <path d="${rP}" fill="none" stroke="${mc}" stroke-width="1.2"/>
-  <line x1="${cx}" y1="${topY-10}" x2="${cx}" y2="${bottomY+10}" stroke="#444441" stroke-width="0.6" stroke-dasharray="7 4" opacity="0.5"/>
-  <line x1="${cx}" y1="${topY-10}" x2="${cx}" y2="${topY-5}" stroke="#444441" stroke-width="1.2" opacity="0.6"/>
-  <line x1="${cx}" y1="${bottomY+5}" x2="${cx}" y2="${bottomY+10}" stroke="#444441" stroke-width="1.2" opacity="0.6"/>
-  <line x1="${cx-majorR}" y1="${topY-2}" x2="${cx-majorR}" y2="${bottomY+2}" stroke="${mc}" stroke-width="0.4" stroke-dasharray="3 2" opacity="0.3"/>
-  <line x1="${cx+majorR}" y1="${topY-2}" x2="${cx+majorR}" y2="${bottomY+2}" stroke="${mc}" stroke-width="0.4" stroke-dasharray="3 2" opacity="0.3"/>
-  <line x1="${cx-minorR}" y1="${topY-2}" x2="${cx-minorR}" y2="${bottomY+2}" stroke="${grayC}" stroke-width="0.4" stroke-dasharray="3 2" opacity="0.3"/>
-  <line x1="${cx+minorR}" y1="${topY-2}" x2="${cx+minorR}" y2="${bottomY+2}" stroke="${grayC}" stroke-width="0.4" stroke-dasharray="3 2" opacity="0.3"/>
-  <line x1="${cx-majorR-5}" y1="${topY+pitchPx*.5}" x2="${cx-majorR-20}" y2="${topY+pitchPx*.5}" stroke="${dimC}" stroke-width="0.6" opacity="0.7"/>
-  <line x1="${cx-minorR+2}" y1="${topY+pitchPx*1.0}" x2="${cx-majorR-20}" y2="${topY+pitchPx*1.0}" stroke="${dimC}" stroke-width="0.6" opacity="0.7"/>
-  <line x1="${cx-majorR-14}" y1="${topY+pitchPx*.5}" x2="${cx-majorR-14}" y2="${topY+pitchPx*1.0}" stroke="${dimC}" stroke-width="0.75" marker-end="url(#va)" marker-start="url(#va)"/>
-  <text x="${cx-majorR-18}" y="${topY+pitchPx*.7}" text-anchor="end" font-family="-apple-system,sans-serif" font-size="7.5" fill="${dimC}" font-weight="500">Depth</text>
-  <text x="${cx-majorR-18}" y="${topY+pitchPx*.7+10}" text-anchor="end" font-family="-apple-system,sans-serif" font-size="7.5" fill="${dimC}">${fmt(td)}</text>
-  <line x1="${cx+pitchR+3}" y1="${topY+pitchPx*2.2}" x2="${cx+majorR+6}" y2="${topY+pitchPx*2.2}" stroke="${corC}" stroke-width="0.5" opacity="0.6"/>
-  <line x1="${cx+pitchR+3}" y1="${topY+pitchPx*3.2}" x2="${cx+majorR+6}" y2="${topY+pitchPx*3.2}" stroke="${corC}" stroke-width="0.5" opacity="0.6"/>
-  <line x1="${cx+majorR+4}" y1="${topY+pitchPx*2.2}" x2="${cx+majorR+4}" y2="${topY+pitchPx*3.2}" stroke="${corC}" stroke-width="0.75" marker-end="url(#va)" marker-start="url(#va)"/>
-  <text x="${cx+majorR+8}" y="${topY+pitchPx*2.6}" text-anchor="start" font-family="-apple-system,sans-serif" font-size="7.5" fill="${corC}" font-weight="500">Pitch</text>
-  <text x="${cx+majorR+8}" y="${topY+pitchPx*2.6+10}" text-anchor="start" font-family="-apple-system,sans-serif" font-size="7.5" fill="${corC}">${fmt(p.pitchMM)}</text>
+  <line x1="${cx}" y1="${tY-10}" x2="${cx}" y2="${bY+10}" stroke="#444" stroke-width="0.6" stroke-dasharray="7 4" opacity="0.5"/>
+  <line x1="${cx}" y1="${tY-10}" x2="${cx}" y2="${tY-5}" stroke="#444" stroke-width="1.2" opacity="0.6"/>
+  <line x1="${cx}" y1="${bY+5}" x2="${cx}" y2="${bY+10}" stroke="#444" stroke-width="1.2" opacity="0.6"/>
+  <line x1="${cx-mR}" y1="${tY-2}" x2="${cx-mR}" y2="${bY+2}" stroke="${mc}" stroke-width="0.4" stroke-dasharray="3 2" opacity="0.3"/>
+  <line x1="${cx+mR}" y1="${tY-2}" x2="${cx+mR}" y2="${bY+2}" stroke="${mc}" stroke-width="0.4" stroke-dasharray="3 2" opacity="0.3"/>
+  <line x1="${cx-mnR}" y1="${tY-2}" x2="${cx-mnR}" y2="${bY+2}" stroke="${gC}" stroke-width="0.4" stroke-dasharray="3 2" opacity="0.3"/>
+  <line x1="${cx+mnR}" y1="${tY-2}" x2="${cx+mnR}" y2="${bY+2}" stroke="${gC}" stroke-width="0.4" stroke-dasharray="3 2" opacity="0.3"/>
+  <line x1="${cx-mR-5}" y1="${tY+pPx*.5}" x2="${cx-mR-20}" y2="${tY+pPx*.5}" stroke="${dimC}" stroke-width="0.6" opacity="0.7"/>
+  <line x1="${cx-mnR+2}" y1="${tY+pPx}" x2="${cx-mR-20}" y2="${tY+pPx}" stroke="${dimC}" stroke-width="0.6" opacity="0.7"/>
+  <line x1="${cx-mR-14}" y1="${tY+pPx*.5}" x2="${cx-mR-14}" y2="${tY+pPx}" stroke="${dimC}" stroke-width="0.75" marker-end="url(#va)" marker-start="url(#va)"/>
+  <text x="${cx-mR-18}" y="${tY+pPx*.72}" text-anchor="end" font-family="-apple-system,sans-serif" font-size="7.5" fill="${dimC}" font-weight="500">Depth</text>
+  <text x="${cx-mR-18}" y="${tY+pPx*.72+10}" text-anchor="end" font-family="-apple-system,sans-serif" font-size="7.5" fill="${dimC}">${fmt(td)}</text>
+  <line x1="${cx+pR+3}" y1="${tY+pPx*2.2}" x2="${cx+mR+6}" y2="${tY+pPx*2.2}" stroke="${corC}" stroke-width="0.5" opacity="0.6"/>
+  <line x1="${cx+pR+3}" y1="${tY+pPx*3.2}" x2="${cx+mR+6}" y2="${tY+pPx*3.2}" stroke="${corC}" stroke-width="0.5" opacity="0.6"/>
+  <line x1="${cx+mR+4}" y1="${tY+pPx*2.2}" x2="${cx+mR+4}" y2="${tY+pPx*3.2}" stroke="${corC}" stroke-width="0.75" marker-end="url(#va)" marker-start="url(#va)"/>
+  <text x="${cx+mR+8}" y="${tY+pPx*2.6}" text-anchor="start" font-family="-apple-system,sans-serif" font-size="7.5" fill="${corC}" font-weight="500">Pitch</text>
+  <text x="${cx+mR+8}" y="${tY+pPx*2.6+10}" text-anchor="start" font-family="-apple-system,sans-serif" font-size="7.5" fill="${corC}">${fmt(p.pMM)}</text>
   <text x="${cx}" y="${H-16}" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="8.5" fill="${mc}" font-weight="500">${p.label}</text>
-  <text x="${cx}" y="${H-5}" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="7.5" fill="${grayC}">${typeLabel} · 60° flank</text>`;
+  <text x="${cx}" y="${H-5}" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="7.5" fill="${gC}">${lbl} · 60° flank</text>`;
 }
 
+/* ── MAIN UPDATE ── */
 function update(){
-  const p=getParams();
+  const p=getP();
   const drills=getDrills(p);
-  const isSti=p.isSti;
+  const std=document.getElementById('std').value;
+  const isAs=std==='as5202', isSti=p.isSti, isPort=curTab==='internal';
+
+  renderBadges(std);
+  renderStdCard(std);
 
   if(isSti){
     const d=p.d;
     document.getElementById('sti-panel').style.display='block';
     document.getElementById('sti-detail').innerHTML=`
-      <div class="sti-row">Bolt thread: <span class="sti-val">${d.label.replace('STI ','')}</span></div>
-      <div class="sti-row">Insert OD: <span class="sti-val">${fmt(d.stiMajorIn*25.4)}</span></div>
-      <div class="sti-row">STI tap drill: <span class="sti-val">${d.stiDrillName} (${fmt(d.stiDrillIn*25.4)})</span></div>
-      <div class="sti-row">Insert TPI: <span class="sti-val">${d.stiTpi}</span></div>`;
-  } else {
+      <div>Bolt thread: <span class="sti-val">${d.label.replace('STI ','')}</span></div>
+      <div>Insert OD: <span class="sti-val">${fmt(d.sMaj*25.4)}</span></div>
+      <div>STI tap drill: <span class="sti-val">${d.sDrillN} (${fmt(d.sDrill*25.4)})</span></div>
+      <div>Insert TPI: <span class="sti-val">${d.sTpi}</span></div>`;
+  }else{
     document.getElementById('sti-panel').style.display='none';
   }
 
+  // Dimension cards
+  let extras='';
+  if(isAs){
+    extras=`
+      <div class="mc"><div class="mc-label">Spotface ⌀</div><div class="mc-val">${fmt(p.sfMM)}</div><div class="mc-sub">${unit==='mm'?(p.sfMM/25.4).toFixed(4)+'"':p.sfMM.toFixed(3)+' mm'}</div></div>
+      <div class="mc"><div class="mc-label">Counterbore ⌀</div><div class="mc-val">${fmt(p.cbMM)}</div><div class="mc-sub">${unit==='mm'?(p.cbMM/25.4).toFixed(4)+'"':p.cbMM.toFixed(3)+' mm'}</div></div>
+      <div class="mc"><div class="mc-label">Min engagement</div><div class="mc-val">${fmt(p.engMM)}</div><div class="mc-sub">3 full threads min</div></div>
+      <div class="mc"><div class="mc-label">O-ring CS ⌀</div><div class="mc-val">${fmt(p.d.oring.cs*25.4)}</div><div class="mc-sub">cross-section dia.</div></div>
+      <div class="mc"><div class="mc-label">O-ring OD</div><div class="mc-val">${fmt(p.d.oring.od*25.4)}</div><div class="mc-sub">per AS568</div></div>
+      <div class="mc"><div class="mc-label">Chamfer angle</div><div class="mc-val">${p.d.chamDeg}°</div><div class="mc-sub">lead-in at bore entry</div></div>
+      <div class="mc"><div class="mc-label">Max pressure</div><div class="mc-val">3,000</div><div class="mc-sub">psi (O-ring installed)</div></div>`;
+  }
   document.getElementById('cards').innerHTML=[
-    {label:'Major diameter',val:fmt(p.majorMM),sub:unit==='mm'?(p.majorMM/25.4).toFixed(4)+'"':p.majorMM.toFixed(3)+' mm'},
-    {label:'Minor diameter',val:fmt(p.minorMM),sub:unit==='mm'?(p.minorMM/25.4).toFixed(4)+'"':p.minorMM.toFixed(3)+' mm'},
-    {label:'Pitch diameter',val:fmt(p.pitchDiaMM),sub:unit==='mm'?(p.pitchDiaMM/25.4).toFixed(4)+'"':p.pitchDiaMM.toFixed(3)+' mm'},
-    {label:'Pitch / TPI',val:fmt(p.pitchMM),sub:p.tpi+' TPI'},
-  ].map(c=>`<div class="metric-card"><div class="mc-label">${c.label}</div><div class="mc-val">${c.val}</div><div class="mc-sub">${c.sub}</div></div>`).join('');
+    {l:'Major diameter',v:fmt(p.mMM),s:unit==='mm'?(p.mMM/25.4).toFixed(4)+'"':p.mMM.toFixed(3)+' mm'},
+    {l:'Minor diameter',v:fmt(p.mnMM),s:unit==='mm'?(p.mnMM/25.4).toFixed(4)+'"':p.mnMM.toFixed(3)+' mm'},
+    {l:'Pitch diameter',v:fmt(p.pdMM),s:unit==='mm'?(p.pdMM/25.4).toFixed(4)+'"':p.pdMM.toFixed(3)+' mm'},
+    {l:'Pitch / TPI',v:fmt(p.pMM),s:p.tpi+' TPI'},
+  ].map(c=>`<div class="mc"><div class="mc-label">${c.l}</div><div class="mc-val">${c.v}</div><div class="mc-sub">${c.s}</div></div>`).join('')+extras;
 
   document.getElementById('diam-head').textContent=unit==='mm'?'Diameter (mm)':'Diameter (in)';
-  document.getElementById('drill-section-title').textContent=isSti&&p.isTapView?'STI tap drill':'Drill sizes — click row to visualize';
+  document.getElementById('drill-title').textContent=isSti&&p.isTap?'STI tap drill':isAs?'Tap drill for port threads':'Drill sizes — click row to visualize';
 
-  let selDrill=null;
-  if(selectedDrillIdx!==null&&selectedDrillIdx<drills.length) selDrill=drills[selectedDrillIdx];
-  else{const ri=drills.findIndex(d=>d.rec);if(ri>=0){selectedDrillIdx=ri;selDrill=drills[ri];}}
+  let sel=null;
+  if(selDi!==null&&selDi<drills.length) sel=drills[selDi];
+  else{const ri=drills.findIndex(d=>d.rec);if(ri>=0){selDi=ri;sel=drills[ri];}}
 
   document.getElementById('drill-tbody').innerHTML=drills.map((d,i)=>`
-    <tr class="${i===selectedDrillIdx?'selected':''}" onclick="selectDrill(${i})">
-      <td><strong>${d.name}</strong></td>
+    <tr class="${i===selDi?'sel':''}" onclick="selectD(${i})">
+      <td><strong>${d.n}</strong></td>
       <td>${unit==='mm'?d.dMM.toFixed(2):d.dIn.toFixed(4)}</td>
       <td>
-        <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-weight:600;min-width:32px">${d.pct}%</span>
-          <div class="eng-bar-wrap" style="flex:1">
-            <div class="eng-bar" style="width:${Math.min(d.pct,100)}%;background:${d.pct>=75?'#185FA5':d.pct>=60?'#BA7517':'#A32D2D'}"></div>
-          </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-weight:600;min-width:28px">${d.pct}%</span>
+          <div class="eb-wrap"><div class="eb" style="width:${Math.min(d.pct,100)}%;background:${d.pct>=75?'#185FA5':d.pct>=60?'#BA7517':'#A32D2D'}"></div></div>
         </div>
       </td>
-      <td>${d.rec?`<span class="badge ${isSti&&d.isStiDrill?'badge-amber':'badge-blue'}">${isSti&&d.isStiDrill?'STI spec':'recommended'}</span>`:''}</td>
+      <td>${d.rec?`<span class="badge ${isSti&&d.isSti?'bd-amber':'bd-blue'}">${isSti&&d.isSti?'STI spec':'recommended'}</span>`:''}</td>
     </tr>`).join('');
 
-  const drillMM=selDrill?selDrill.dMM:null;
-  drawDiagram(p, drillMM);
+  const drillMM=sel?sel.dMM:null;
+  if(isAs) drawAs5202(p, isPort);
+  else drawThread(p, drillMM);
 
-  if(selDrill){
-    const col=selDrill.pct>=75?'#185FA5':selDrill.pct>=60?'#854F0B':'#A32D2D';
-    const msg=selDrill.pct>=75?'Good for steel and aluminum.':selDrill.pct>=60?'Suitable for softer materials (brass, aluminum, plastic).':'Low engagement — risk of stripping under load.';
-    const stiMsg=isSti&&p.isTapView?' This is the specified STI tap drill that creates the oversized hole to accept the helical insert.':'';
-    document.getElementById('eng-note').innerHTML=`<strong style="color:${col}">${selDrill.pct}% thread engagement</strong> with ${selDrill.name} (${fmt(selDrill.dMM)}).${stiMsg} ${!isSti?msg:''}`;
+  if(sel){
+    const col=sel.pct>=75?'#185FA5':sel.pct>=60?'#854F0B':'#A32D2D';
+    const asN=isAs?' Sealing is via O-ring on spotface — threads are for mechanical retention only. Never use thread sealant.':'';
+    const stiN=isSti&&p.isTap?' This is the specified STI tap drill for the helical insert outer thread.':'';
+    const em=sel.pct>=75?'Good for steel and aluminum.':sel.pct>=60?'Suitable for softer materials.':'Low engagement — risk of stripping.';
+    document.getElementById('eng-note').innerHTML=`<strong style="color:${col}">${sel.pct}% thread engagement</strong> with ${sel.n} (${fmt(sel.dMM)}).${asN}${stiN}${!isSti&&!isAs?' '+em:''}`;
   }
 }
 
-function selectDrill(i){selectedDrillIdx=i;update();}
+function selectD(i){selDi=i;update();}
 onStdChange();
 </script>
 </body>
 </html>
-
